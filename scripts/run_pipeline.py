@@ -14,6 +14,7 @@ from pathlib import Path
 
 from provider_settings import provider_names, resolve_provider_config
 
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 
@@ -26,6 +27,15 @@ def run(command: list[str], allow_failure: bool = False, env: dict[str, str] | N
     print("$ " + " ".join(command))
     completed = subprocess.run(command, check=not allow_failure, env=env)
     return completed.returncode
+
+
+def open_html(path: Path) -> bool:
+    try:
+        subprocess.run(["open", str(path.resolve())], check=True)
+    except Exception as exc:  # noqa: BLE001 - 打开浏览器失败不应影响完整流程产物。
+        print(f"HTML 页面已生成，但自动打开失败：{exc}")
+        return False
+    return True
 
 
 def ask_query() -> str:
@@ -77,6 +87,7 @@ def main() -> int:
     parser.add_argument("--skip-extract", action="store_true", help="搜索和下载 PDF，但不提取正文。")
     parser.add_argument("--skip-summary", action="store_true", help="不生成中文摘要报告。")
     parser.add_argument("--skip-html", action="store_true", help="不导出最终 HTML 页面。")
+    parser.add_argument("--no-open", action="store_true", help="HTML 生成后不自动打开页面。")
     parser.add_argument("--save-prompt", action="store_true", help="保存发送给模型的提示词，便于开发调试。")
     args = parser.parse_args()
 
@@ -88,8 +99,7 @@ def main() -> int:
     except ValueError as exc:
         parser.error(str(exc))
 
-    provisional_slug = slugify(request_text)
-    output_dir = args.output_dir or Path("runs") / provisional_slug
+    output_dir = args.output_dir or Path("runs") / slugify(request_text)
     output_dir.mkdir(parents=True, exist_ok=True)
     request_json = output_dir / "request.json"
     results_json = output_dir / "results.json"
@@ -107,12 +117,12 @@ def main() -> int:
     max_results = args.max_results or int(parsed.get("max_results") or 6)
     date_from = args.date_from or parsed.get("date_from")
     date_to = args.date_to or parsed.get("date_to")
-    print(f"解析后的搜索关键词：{query}")
+    print(f"检索主题：{query}")
     if keywords:
-        print(f"拆分关键词：{', '.join(keywords)}")
-    print(f"解析后的论文篇数：{max_results}")
+        print(f"关键词条件：{'；'.join(keywords)}")
+    print(f"论文篇数：{max_results}")
     if date_from or date_to:
-        print(f"解析后的时间范围：{date_from or '不限'} 到 {date_to or '不限'}")
+        print(f"时间范围：{date_from or '不限'} 到 {date_to or '不限'}")
 
     search_command = [
         sys.executable,
@@ -218,6 +228,9 @@ def main() -> int:
         print("摘要报告：未生成")
     if html_generated:
         print(f"HTML 页面：{html_path}")
+        if not args.no_open:
+            if open_html(html_path):
+                print("已自动打开 HTML 页面。")
     else:
         print("HTML 页面：未生成")
     return 0

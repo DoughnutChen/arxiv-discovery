@@ -1,0 +1,50 @@
+[
+  {
+    "arxiv_id": "2410.16956v1",
+    "title": "Towards an Assisted Simulation Planning for Co-Simulation of Cyber-Physical Energy Systems",
+    "pdf_url": "https://arxiv.org/pdf/2410.16956v1",
+    "pdf_path": "runs/6-3-simulation/pdfs/2410.16956v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2308.00600v1",
+    "title": "Simulating the social influence in transport mode choices",
+    "pdf_url": "https://arxiv.org/pdf/2308.00600v1",
+    "pdf_path": "runs/6-3-simulation/pdfs/2308.00600v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2409.11392v1",
+    "title": "Temporal Load Imbalance on Ondes3D Seismic Simulator for Different Multicore Architectures",
+    "pdf_url": "https://arxiv.org/pdf/2409.11392v1",
+    "pdf_path": "runs/6-3-simulation/pdfs/2409.11392v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2409.00742v1",
+    "title": "Simulation of Social Media-Driven Bubble Formation in Financial Markets using an Agent-Based Model with Hierarchical Influence Network",
+    "pdf_url": "https://arxiv.org/pdf/2409.00742v1",
+    "pdf_path": "runs/6-3-simulation/pdfs/2409.00742v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2405.08032v2",
+    "title": "Exploring the Potential of Conversational AI Support for Agent-Based Social Simulation Model Design",
+    "pdf_url": "https://arxiv.org/pdf/2405.08032v2",
+    "pdf_path": "runs/6-3-simulation/pdfs/2405.08032v2.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2604.11466v1",
+    "title": "SLALOM: Simulation Lifecycle Analysis via Longitudinal Observation Metrics for Social Simulation",
+    "pdf_url": "https://arxiv.org/pdf/2604.11466v1",
+    "pdf_path": "runs/6-3-simulation/pdfs/2604.11466v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  }
+]

@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ArXiv Discovery 论文雷达</title>
+    <style>
+:root {
+  --ink: #f5f0e6;
+  --muted: #b8b0a3;
+  --paper: #151820;
+  --panel: #1e2430;
+  --panel-2: #252b37;
+  --line: rgba(245, 240, 230, 0.14);
+  --gold: #d6aa58;
+  --sage: #8fb7a0;
+  --coral: #d88a70;
+  --blue: #88a6d8;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgba(214, 170, 88, 0.08), transparent 36rem),
+    radial-gradient(circle at top right, rgba(136, 166, 216, 0.12), transparent 28rem),
+    #10131a;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: max-content 1fr minmax(14rem, 22rem);
+  gap: 1.25rem;
+  align-items: center;
+  padding: 0.85rem clamp(1rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--line);
+  background: rgba(16, 19, 26, 0.88);
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  display: inline-flex;
+  gap: 0.65rem;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid rgba(214, 170, 88, 0.6);
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.nav a {
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--gold);
+}
+
+.search-box {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.search-box input,
+.import-panel input {
+  width: 100%;
+  min-width: 0;
+}
+
+.search-box input {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.55rem 0.7rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+}
+
+main {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.hero {
+  min-height: 58vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  gap: clamp(1.25rem, 3vw, 3rem);
+  align-items: center;
+  padding: clamp(2rem, 5vw, 4rem) 0 2.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.05;
+}
+
+h1 {
+  max-width: 10ch;
+  font-size: clamp(2.7rem, 7vw, 5.4rem);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 3vw, 2.4rem);
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.hero-text {
+  max-width: 38rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.import-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  max-width: 48rem;
+  margin-top: 2rem;
+}
+
+.is-exported .import-panel {
+  display: none;
+}
+
+.import-panel label {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.import-panel span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.hero-dashboard {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.metric,
+.query-card {
+  padding: 0.95rem;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  box-shadow: var(--shadow);
+}
+
+.metric span,
+.query-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 1.35rem;
+}
+
+.metric strong,
+.query-card span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.section-band {
+  padding: 4rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.section-heading {
+  display: block;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.summary-block {
+  max-width: 72rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-left: 4px solid var(--gold);
+  background: rgba(255, 255, 255, 0.05);
+  color: #eee6d8;
+  font-size: 1.1rem;
+}
+
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.paper-grid.empty {
+  display: block;
+  color: var(--muted);
+}
+
+.paper-card {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.paper-card.hidden {
+  display: none;
+}
+
+.paper-card-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 9rem;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(214, 170, 88, 0.12), transparent);
+}
+
+.paper-index {
+  margin: 0 0 0.45rem;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+}
+
+.meta-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 0.7rem;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.meta-list dt {
+  color: var(--gold);
+}
+
+.meta-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.link-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0 1.25rem 1rem;
+}
+
+.link-row a {
+  border: 1px solid var(--line);
+  padding: 0.35rem 0.65rem;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.86rem;
+}
+
+.link-row a:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.paper-body {
+  padding: 0 1.25rem 1.35rem;
+}
+
+.paper-body h4 {
+  margin: 0.9rem 0 0.35rem;
+  color: var(--gold);
+  font-size: 0.98rem;
+}
+
+.paper-body p {
+  margin: 0;
+  color: #eee6d8;
+  white-space: normal;
+}
+
+.summary-item {
+  margin: 0.65rem 0;
+}
+
+.summary-item strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--gold);
+  font-size: 0.92rem;
+}
+
+.radar {
+  width: 100%;
+  height: auto;
+}
+
+.radar text {
+  fill: var(--muted);
+  font-size: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 46rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+th,
+td {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+td {
+  color: var(--muted);
+}
+
+mark {
+  background: rgba(214, 170, 88, 0.35);
+  color: var(--ink);
+  padding: 0 0.1rem;
+}
+
+@media (max-width: 860px) {
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .hero,
+  .paper-grid,
+  .import-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-card-head {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+  }
+
+  .topbar,
+  .import-panel,
+  .search-box {
+    display: none;
+  }
+
+  main {
+    width: 100%;
+  }
+
+  .hero {
+    min-height: auto;
+  }
+
+  .paper-card,
+  .metric,
+  .query-card,
+  .summary-block {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+</style>
+  </head>
+  <body class="is-exported">
+    <header class="topbar">
+      <a class="brand" href="#hero" aria-label="回到顶部">
+        <span class="brand-mark">AD</span>
+        <span>ArXiv Discovery</span>
+      </a>
+      <nav class="nav">
+        <a href="#summary">整体摘要</a>
+        <a href="#papers">论文卡片</a>
+        <a href="#archive">归档表</a>
+      </nav>
+      <label class="search-box">
+        <span>搜索</span>
+        <input id="keywordInput" type="search" placeholder="标题 / 作者 / 摘要" />
+      </label>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Academic Radar Poster</p>
+          <h1>论文速读雷达</h1>
+          <p id="heroText" class="hero-text">
+            把零散论文压缩成一张可检索、可浏览、可打印的研究地图。
+          </p>
+</div>
+        <div class="hero-dashboard" aria-label="报告概览">
+          <div class="metric">
+            <span id="paperCount">0</span>
+            <strong>论文数量</strong>
+          </div>
+          <div class="metric">
+            <span id="sortValue">未导入</span>
+            <strong>排序方式</strong>
+          </div>
+          <div class="query-card">
+            <span>当前关键词</span>
+            <strong id="queryValue">等待导入</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="summary" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Overview</p>
+          <h2>整体摘要</h2>
+        </div>
+        <article id="overallSummary" class="summary-block">
+          请先导入完整流程生成的 `results.json` 和 `report.md`。如果只有 `results.json`，页面仍会展示论文元数据，但不会显示中文摘要。
+        </article>
+      </section>
+
+      <section id="papers" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Paper Radar</p>
+          <h2>论文卡片</h2>
+        </div>
+        <div id="paperGrid" class="paper-grid empty">
+          <p>尚未导入论文数据。</p>
+        </div>
+      </section>
+
+      <section id="archive" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Archive</p>
+          <h2>论文归档</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>Title</th>
+                <th>arXiv ID</th>
+                <th>日期</th>
+                <th>相关性</th>
+              </tr>
+            </thead>
+            <tbody id="archiveBody">
+              <tr>
+                <td colspan="5">尚未导入论文数据。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="paperTemplate">
+      <article class="paper-card">
+        <div class="paper-card-head">
+          <div>
+            <p class="paper-index"></p>
+            <h3></h3>
+          </div>
+          <div class="radar-slot"></div>
+        </div>
+        <dl class="meta-list"></dl>
+        <div class="link-row"></div>
+        <div class="paper-body">
+          <div class="paper-summary"></div>
+          <div class="paper-field"></div>
+          <div class="paper-reason"></div>
+        </div>
+      </article>
+    </template>
+
+    <script>
+window.ARXIV_DISCOVERY_DATA = {"results": {"query": "ai", "category": null, "sort_by": "relevance", "sort_order": "descending", "requested_results": 2, "date_from": "2023-05-01", "date_to": "2026-04-30", "keywords": ["ai"], "returned_results": 2, "papers": [{"arxiv_id": "2603.28944v1", "title": "AI prediction leads people to forgo guaranteed rewards", "summary": "Artificial intelligence (AI) is understood to affect the content of people's decisions. Here, using a behavioral implementation of the classic Newcomb's paradox in 1,305 participants, we show that AI can also change how people decide. In this paradigm, belief in predictive authority can lead individuals to constrain decision-making, forgoing a guaranteed reward. Over 40% of participants treated AI as such a predictive authority. This significantly increased the odds of forgoing the guaranteed reward by a factor of 3.39 (95% CI: 2.45-4.70) compared with random framing, and reduced earnings by 10.7-42.9%. The effect appeared across AI presentations and decision contexts and persisted even when predictions failed. When people believe AI can predict their behavior, they may self-constrain it in anticipation of that prediction.", "authors": ["Aoi Naito", "Hirokazu Shirado"], "published": "2026-03-30T19:36:10Z", "updated": "2026-03-30T19:36:10Z", "abstract_url": "http://arxiv.org/abs/2603.28944v1", "pdf_url": "https://arxiv.org/pdf/2603.28944v1", "primary_category": "cs.HC", "categories": ["cs.HC"]}, {"arxiv_id": "2501.02842v1", "title": "Foundations of GenIR", "summary": "The chapter discusses the foundational impact of modern generative AI models on information access (IA) systems. In contrast to traditional AI, the large-scale training and superior data modeling of generative AI models enable them to produce high-quality, human-like responses, which brings brand new opportunities for the development of IA paradigms. In this chapter, we identify and introduce two of them in details, i.e., information generation and information synthesis. Information generation allows AI to create tailored content addressing user needs directly, enhancing user experience with immediate, relevant outputs. Information synthesis leverages the ability of generative AI to integrate and reorganize existing information, providing grounded responses and mitigating issues like model hallucination, which is particularly valuable in scenarios requiring precision and external knowledge. This chapter delves into the foundational aspects of generative models, including architecture, scaling, and training, and discusses their applications in multi-modal scenarios. Additionally, it examines the retrieval-augmented generation paradigm and other methods for corpus modeling and understanding, demonstrating how generative AI can enhance information access systems. It also summarizes potential challenges and fruitful directions for future studies.", "authors": ["Qingyao Ai", "Jingtao Zhan", "Yiqun Liu"], "published": "2025-01-06T08:38:29Z", "updated": "2025-01-06T08:38:29Z", "abstract_url": "http://arxiv.org/abs/2501.02842v1", "pdf_url": "https://arxiv.org/pdf/2501.02842v1", "primary_category": "cs.IR", "categories": ["cs.IR", "cs.LG"]}]}, "reportText": "# arXiv Discovery：ai\n\n- 搜索关键词：`ai`\n- arXiv 分类：`cs.HC` / `cs.IR`\n- 排序方式：`relevance/descending`\n- 处理论文数：`2`\n- 备注：`无`\n\n## 整体摘要\n\n本批论文聚焦于人工智能（AI）对人类决策行为的影响以及AI在信息获取系统中的应用前景。第一篇论文探讨了AI预测如何改变人们的决策过程，特别是在涉及预测权威性时，人们可能会放弃确定的奖励。第二篇论文则讨论了现代生成式AI模型对信息获取系统的影响，特别是信息生成和信息合成两个方向，强调了AI在提供即时、相关输出和整合现有信息方面的能力。两篇论文均展示了AI技术在不同领域的应用潜力和对人类行为可能产生的深远影响。\n\n## 1. AI prediction leads people to forgo guaranteed rewards\n\n- arXiv ID：`2603.28944v1`\n- 链接：[Abstract](https://arxiv.org/abs/2603.28944v1)，[PDF](https://arxiv.org/pdf/2603.28944v1)\n- 作者：Aoi Naito；Hirokazu Shirado\n- 发布/更新：2026-03-30 / 2026-03-30\n\n### 摘要\n\n**研究问题**\n\n本研究探讨了人工智能（AI）预测如何影响人们的决策行为，特别是在AI被视作预测权威时，人们是否会放弃确定的奖励。\n\n**研究方法**\n\n研究者通过行为实验，基于Newcomb悖论范式，对1305名参与者进行了测试。实验中，参与者面临两个选择，AI系统预测他们的选择，但参与者在做出选择时并不知道AI的具体预测结果。\n\n**研究结论**\n\n① 超过40%的参与者将AI视为预测权威，这显著增加了放弃确定奖励的可能性，增加了3.39倍。\n② 这种效应在不同的AI呈现和决策背景中均出现，并且即使在预测失败的情况下也持续存在。\n③ 参与者可能因为预期AI的预测而自我限制自己的行为。\n\n### 具体领域\n\n- 人机交互 / 行为决策\n\n### 推荐原因\n\n该研究为理解AI预测如何影响人类决策提供了新的视角，对研究AI与人类行为交互的学者具有重要的启发意义。\n\n## 2. Foundations of GenIR\n\n- arXiv ID：`2501.02842v1`\n- 链接：[Abstract](https://arxiv.org/abs/2501.02842v1)，[PDF](https://arxiv.org/pdf/2501.02844v1)\n- 作者：Qingyao Ai；Jingtao Zhan；Yiqun Liu\n- 发布/更新：2025-01-06 / 2025-01-06\n\n### 摘要\n\n**研究问题**\n\n本文讨论了现代生成式AI模型对信息获取（IA）系统的基础性影响，特别是信息生成和信息合成两个方向。\n\n**研究方法**\n\n作者详细识别并介绍了信息生成和信息合成两种IA范式，并探讨了生成模型的基础方面，包括架构、扩展和训练，并讨论了它们在多模态场景中的应用。\n\n**研究结论**\n\n① 生成式AI模型能够直接创建满足用户需求的内容，提升用户体验。\n② 生成式AI通过整合和重组现有信息，提供有根据的响应，减少模型幻觉问题。\n③ 探讨了检索增强生成范式和其他语料库建模与理解方法，展示生成式AI如何增强信息获取系统。\n\n### 具体领域\n\n- 信息检索 / 生成式AI\n\n### 推荐原因\n\n该论文为理解生成式AI在信息获取领域的应用提供了深入的理论基础和实践方向，对信息检索和AI领域的研究者具有重要的参考价值。\n\n## 推荐阅读顺序\n\n1. AI prediction leads people to forgo guaranteed rewards\n2. Foundations of GenIR"};
+</script>
+<script>
+const state = {
+  results: null,
+  reportText: "",
+  parsedReport: { overall: "", papers: [] },
+  mergedPapers: [],
+};
+
+const nodes = {
+  resultsFile: document.querySelector("#resultsFile"),
+  reportFile: document.querySelector("#reportFile"),
+  keywordInput: document.querySelector("#keywordInput"),
+  paperCount: document.querySelector("#paperCount"),
+  sortValue: document.querySelector("#sortValue"),
+  queryValue: document.querySelector("#queryValue"),
+  heroText: document.querySelector("#heroText"),
+  overallSummary: document.querySelector("#overallSummary"),
+  paperGrid: document.querySelector("#paperGrid"),
+  archiveBody: document.querySelector("#archiveBody"),
+  paperTemplate: document.querySelector("#paperTemplate"),
+};
+
+if (nodes.resultsFile) {
+  nodes.resultsFile.addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    state.results = JSON.parse(text);
+    render();
+  });
+}
+
+if (nodes.reportFile) {
+  nodes.reportFile.addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    state.reportText = await file.text();
+    state.parsedReport = parseReport(state.reportText);
+    render();
+  });
+}
+
+nodes.keywordInput.addEventListener("input", () => {
+  applySearch(nodes.keywordInput.value.trim());
+});
+
+const embedded = window.ARXIV_DISCOVERY_DATA;
+if (embedded?.results) {
+  document.body.classList.add("is-exported");
+  state.results = embedded.results;
+  state.reportText = embedded.reportText || "";
+  state.parsedReport = parseReport(state.reportText);
+  render();
+}
+
+function parseReport(markdown) {
+  const overallMatch = markdown.match(/##\s*整体摘要\s*([\s\S]*?)(?=\n##\s+\d+\.|\n##\s+阅读顺序|\n##\s+[^\n]+|$)/);
+  const papers = [];
+  const paperPattern = /##\s+(\d+)\.\s+(.+?)\n([\s\S]*?)(?=\n##\s+\d+\.|\n##\s+阅读顺序|$)/g;
+  let match;
+  while ((match = paperPattern.exec(markdown)) !== null) {
+    const body = match[3];
+    papers.push({
+      index: Number(match[1]),
+      title: match[2].trim(),
+      arxivId: pick(body, /arXiv ID[：:]\s*`?([^`\n]+)`?/),
+      authors: pick(body, /作者[：:]\s*([^\n]+)/),
+      date: pick(body, /发布\/更新[：:]\s*([^\n]+)/),
+      summaryParts: researchSummaryParts(body),
+      summary: researchSummary(body),
+      field: section(body, "具体领域"),
+      reason: section(body, "推荐原因"),
+    });
+  }
+  return {
+    overall: cleanup(overallMatch?.[1] || ""),
+    papers,
+  };
+}
+
+function pick(text, pattern) {
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function section(text, title) {
+  const pattern = new RegExp(`###\\s*${title}\\s*([\\s\\S]*?)(?=\\n###\\s+|$)`);
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function boldSection(text, title) {
+  const pattern = new RegExp(`\\*\\*${title}\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*[^*]+\\*\\*|\\n###\\s+|$)`);
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function researchSummaryParts(text) {
+  const summaryBlock = section(text, "摘要");
+  return {
+    question: boldSection(summaryBlock, "研究问题") || section(text, "研究问题"),
+    method: boldSection(summaryBlock, "研究方法") || section(text, "研究方法"),
+    findings: boldSection(summaryBlock, "研究结论") || section(text, "研究结论"),
+  };
+}
+
+function researchSummary(text) {
+  const summaryParts = researchSummaryParts(text);
+  const parts = [
+    ["研究问题", summaryParts.question],
+    ["研究方法", summaryParts.method],
+    ["研究结论", summaryParts.findings],
+  ].filter(([, value]) => value);
+  return parts.map(([title, value]) => `${title}：${value}`).join("\n\n");
+}
+
+function cleanup(text) {
+  return text
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/\[[^\]]+\]\([^)]+\)/g, (value) => value.replace(/\(([^)]+)\)/, ""))
+    .replace(/\s+\n/g, "\n")
+    .trim();
+}
+
+function render() {
+  const results = state.results || {};
+  const metadataPapers = Array.isArray(results.papers) ? results.papers : [];
+  state.mergedPapers = metadataPapers.map((paper, index) => mergePaper(paper, index));
+
+  nodes.paperCount.textContent = String(metadataPapers.length || state.parsedReport.papers.length || 0);
+  nodes.sortValue.textContent = results.sort_by ? `${results.sort_by}/${results.sort_order || "descending"}` : "未导入";
+  nodes.queryValue.textContent = results.query || "等待导入";
+  nodes.overallSummary.textContent =
+    state.parsedReport.overall ||
+    (metadataPapers.length ? "已导入 arXiv 元数据。继续导入 report.md 后，将显示整体摘要和单篇推荐原因。" : "请先导入完整流程生成的 results.json 和 report.md。");
+
+  renderPapers(state.mergedPapers.length ? state.mergedPapers : state.parsedReport.papers);
+  renderArchive(state.mergedPapers);
+  applySearch(nodes.keywordInput.value.trim());
+}
+
+function mergePaper(paper, index) {
+  const reportPaper = state.parsedReport.papers.find((item) => samePaper(item, paper, index));
+  const authors = Array.isArray(paper.authors) ? paper.authors.join("；") : paper.authors || reportPaper?.authors || "";
+  return {
+    index: index + 1,
+    title: paper.title || reportPaper?.title || `Paper ${index + 1}`,
+    arxivId: paper.arxiv_id || reportPaper?.arxivId || "",
+    authors,
+    date: dateOnly(paper.published || paper.updated || reportPaper?.date || ""),
+    abstractUrl: paper.abstract_url || "",
+    pdfUrl: paper.pdf_url || "",
+    categories: paper.categories || [],
+    arxivSummary: paper.summary || "",
+    summaryParts: reportPaper?.summaryParts || null,
+    field: reportPaper?.field || "",
+    summary: reportPaper?.summary || "尚未导入 report.md，暂无中文摘要。",
+    reason: reportPaper?.reason || "尚未导入 report.md，暂无推荐原因。",
+  };
+}
+
+function samePaper(reportPaper, paper, index) {
+  if (reportPaper.arxivId && paper.arxiv_id) return reportPaper.arxivId === paper.arxiv_id;
+  if (reportPaper.title && paper.title) return normalize(reportPaper.title) === normalize(paper.title);
+  return reportPaper.index === index + 1;
+}
+
+function normalize(value) {
+  return String(value).replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function dateOnly(value) {
+  return String(value).slice(0, 10) || "未知";
+}
+
+function renderPapers(papers) {
+  nodes.paperGrid.innerHTML = "";
+  nodes.paperGrid.classList.toggle("empty", papers.length === 0);
+  if (!papers.length) {
+    nodes.paperGrid.textContent = "尚未导入论文数据。";
+    return;
+  }
+
+  papers.forEach((paper, index) => {
+    const fragment = nodes.paperTemplate.content.cloneNode(true);
+    const card = fragment.querySelector(".paper-card");
+    card.dataset.search = [paper.title, paper.authors, paper.summary, paper.reason, paper.arxivSummary].join(" ").toLowerCase();
+    fragment.querySelector(".paper-index").textContent = `Paper ${String(index + 1).padStart(2, "0")}`;
+    fragment.querySelector("h3").textContent = paper.title;
+    fragment.querySelector(".meta-list").innerHTML = metadataMarkup(paper);
+    fragment.querySelector(".link-row").innerHTML = linksMarkup(paper);
+    fragment.querySelector(".paper-summary").innerHTML = summaryMarkup(paper);
+    fragment.querySelector(".paper-field").innerHTML = sectionMarkup("具体领域", paper.field || "暂无具体领域。");
+    fragment.querySelector(".paper-reason").innerHTML = sectionMarkup("推荐原因", paper.reason || "暂无推荐原因。");
+    fragment.querySelector(".radar-slot").innerHTML = radarSvg(scorePaper(paper));
+    nodes.paperGrid.appendChild(fragment);
+  });
+}
+
+function summaryMarkup(paper) {
+  const parts = paper.summaryParts || {};
+  if (parts.question || parts.method || parts.findings) {
+    return [
+      `<h4>摘要</h4>`,
+      summaryItemMarkup("研究问题", parts.question),
+      summaryItemMarkup("研究方法", parts.method),
+      summaryItemMarkup("研究结论", parts.findings),
+    ].join("");
+  }
+  return sectionMarkup("摘要", paper.summary || "暂无摘要。");
+}
+
+function summaryItemMarkup(title, value) {
+  if (!value) return "";
+  return `<div class="summary-item"><strong>${escapeHtml(title)}</strong><p>${formatMultiline(value)}</p></div>`;
+}
+
+function sectionMarkup(title, value) {
+  return `<h4>${escapeHtml(title)}</h4><p>${formatMultiline(value)}</p>`;
+}
+
+function formatMultiline(value) {
+  return escapeHtml(value)
+    .split(/\n+/)
+    .filter(Boolean)
+    .map((line) => line.trim())
+    .join("<br />");
+}
+
+function metadataMarkup(paper) {
+  return [
+    ["arXiv", paper.arxivId || "未知"],
+    ["日期", paper.date || "未知"],
+    ["作者", paper.authors || "未知"],
+    ["分类", Array.isArray(paper.categories) ? paper.categories.join(" / ") : "未知"],
+  ]
+    .map(([key, value]) => `<dt>${escapeHtml(key)}</dt><dd>${escapeHtml(value)}</dd>`)
+    .join("");
+}
+
+function linksMarkup(paper) {
+  if (paper.pdfUrl) {
+    return `<a href="${escapeAttribute(paper.pdfUrl)}" target="_blank" rel="noreferrer">PDF下载</a>`;
+  }
+  return "<span>暂无 PDF</span>";
+}
+
+function scorePaper(paper) {
+  const query = normalize(state.results?.query || "");
+  const text = normalize([paper.title, paper.arxivSummary, paper.summary].join(" "));
+  const tokens = query.split(/\s+/).filter(Boolean);
+  const matched = tokens.filter((token) => text.includes(token)).length;
+  const relevance = tokens.length ? Math.round((matched / tokens.length) * 100) : 70;
+  const summaryDepth = Math.min(100, Math.round(((paper.summary || "").length / 260) * 100));
+  const metadata = [paper.title, paper.authors, paper.date, paper.abstractUrl, paper.pdfUrl].filter(Boolean).length * 20;
+  const freshness = freshnessScore(paper.date);
+  const readability = Math.min(100, Math.round(((paper.reason || "").length / 60) * 100));
+  return [
+    ["相关性", clamp(relevance)],
+    ["摘要", clamp(summaryDepth)],
+    ["元数据", clamp(metadata)],
+    ["时效", clamp(freshness)],
+    ["推荐", clamp(readability)],
+  ];
+}
+
+function freshnessScore(dateText) {
+  const time = Date.parse(dateText);
+  if (Number.isNaN(time)) return 55;
+  const days = (Date.now() - time) / 86400000;
+  if (days <= 30) return 100;
+  if (days <= 365) return 85;
+  if (days <= 1095) return 70;
+  return 55;
+}
+
+function clamp(value) {
+  return Math.max(0, Math.min(100, value));
+}
+
+function radarSvg(scores) {
+  const size = 132;
+  const center = size / 2;
+  const radius = 44;
+  const points = scores.map(([, score], index) => point(center, radius * (score / 100), index, scores.length));
+  const grid = [0.33, 0.66, 1]
+    .map((scale) => polygon(scores.map((_, index) => point(center, radius * scale, index, scores.length)), "none", "rgba(245,240,230,.18)"))
+    .join("");
+  const axes = scores
+    .map(([label], index) => {
+      const end = point(center, radius, index, scores.length);
+      const labelPoint = point(center, radius + 14, index, scores.length);
+      return `<line x1="${center}" y1="${center}" x2="${end.x}" y2="${end.y}" stroke="rgba(245,240,230,.14)" /><text x="${labelPoint.x}" y="${labelPoint.y}" text-anchor="middle">${label}</text>`;
+    })
+    .join("");
+  return `<svg class="radar" viewBox="0 0 ${size} ${size}" role="img" aria-label="论文雷达评分">${grid}${axes}${polygon(points, "rgba(214,170,88,.35)", "#d6aa58")}</svg>`;
+}
+
+function point(center, radius, index, total) {
+  const angle = -Math.PI / 2 + (Math.PI * 2 * index) / total;
+  return {
+    x: Number((center + Math.cos(angle) * radius).toFixed(2)),
+    y: Number((center + Math.sin(angle) * radius).toFixed(2)),
+  };
+}
+
+function polygon(points, fill, stroke) {
+  const value = points.map((item) => `${item.x},${item.y}`).join(" ");
+  return `<polygon points="${value}" fill="${fill}" stroke="${stroke}" stroke-width="1.4" />`;
+}
+
+function renderArchive(papers) {
+  if (!papers.length) {
+    nodes.archiveBody.innerHTML = `<tr><td colspan="5">尚未导入论文数据。</td></tr>`;
+    return;
+  }
+  nodes.archiveBody.innerHTML = papers
+    .map((paper, index) => {
+      const score = average(scorePaper(paper).map((item) => item[1]));
+      return `<tr><td>${index + 1}</td><td>${escapeHtml(paper.title)}</td><td>${escapeHtml(paper.arxivId)}</td><td>${escapeHtml(paper.date)}</td><td>${score} / 100</td></tr>`;
+    })
+    .join("");
+}
+
+function average(values) {
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function applySearch(keyword) {
+  const normalized = keyword.toLowerCase();
+  document.querySelectorAll(".paper-card").forEach((card) => {
+    const matched = !normalized || card.dataset.search.includes(normalized);
+    card.classList.toggle("hidden", !matched);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll("`", "&#096;");
+}
+
+</script>
+  </body>
+</html>

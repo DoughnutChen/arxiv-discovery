@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ArXiv Discovery 论文雷达</title>
+    <style>
+:root {
+  --ink: #f5f0e6;
+  --muted: #b8b0a3;
+  --paper: #151820;
+  --panel: #1e2430;
+  --panel-2: #252b37;
+  --line: rgba(245, 240, 230, 0.14);
+  --gold: #d6aa58;
+  --sage: #8fb7a0;
+  --coral: #d88a70;
+  --blue: #88a6d8;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgba(214, 170, 88, 0.08), transparent 36rem),
+    radial-gradient(circle at top right, rgba(136, 166, 216, 0.12), transparent 28rem),
+    #10131a;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: max-content 1fr minmax(14rem, 22rem);
+  gap: 1.25rem;
+  align-items: center;
+  padding: 0.85rem clamp(1rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--line);
+  background: rgba(16, 19, 26, 0.88);
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  display: inline-flex;
+  gap: 0.65rem;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid rgba(214, 170, 88, 0.6);
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.nav a {
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--gold);
+}
+
+.search-box {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.search-box input,
+.import-panel input {
+  width: 100%;
+  min-width: 0;
+}
+
+.search-box input {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.55rem 0.7rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+}
+
+main {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.hero {
+  min-height: 86vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+  padding: clamp(3rem, 8vw, 7rem) 0 4rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.05;
+}
+
+h1 {
+  max-width: 10ch;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 3vw, 2.4rem);
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.hero-text {
+  max-width: 42rem;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
+.import-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  max-width: 48rem;
+  margin-top: 2rem;
+}
+
+.is-exported .import-panel {
+  display: none;
+}
+
+.import-panel label {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.import-panel span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.hero-dashboard {
+  display: grid;
+  gap: 1rem;
+}
+
+.metric,
+.query-card {
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  box-shadow: var(--shadow);
+}
+
+.metric span,
+.query-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 1.35rem;
+}
+
+.metric strong,
+.query-card span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.section-band {
+  padding: 4rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.section-heading {
+  display: block;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.summary-block {
+  max-width: 72rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-left: 4px solid var(--gold);
+  background: rgba(255, 255, 255, 0.05);
+  color: #eee6d8;
+  font-size: 1.1rem;
+}
+
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.paper-grid.empty {
+  display: block;
+  color: var(--muted);
+}
+
+.paper-card {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.paper-card.hidden {
+  display: none;
+}
+
+.paper-card-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 9rem;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(214, 170, 88, 0.12), transparent);
+}
+
+.paper-index {
+  margin: 0 0 0.45rem;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+}
+
+.meta-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 0.7rem;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.meta-list dt {
+  color: var(--gold);
+}
+
+.meta-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.link-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0 1.25rem 1rem;
+}
+
+.link-row a {
+  border: 1px solid var(--line);
+  padding: 0.35rem 0.65rem;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.86rem;
+}
+
+.link-row a:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.paper-body {
+  padding: 0 1.25rem 1.35rem;
+}
+
+.paper-body h4 {
+  margin: 0.8rem 0 0.35rem;
+  color: var(--gold);
+}
+
+.paper-body p {
+  margin: 0;
+  color: #eee6d8;
+}
+
+.radar {
+  width: 100%;
+  height: auto;
+}
+
+.radar text {
+  fill: var(--muted);
+  font-size: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 46rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+th,
+td {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+td {
+  color: var(--muted);
+}
+
+mark {
+  background: rgba(214, 170, 88, 0.35);
+  color: var(--ink);
+  padding: 0 0.1rem;
+}
+
+@media (max-width: 860px) {
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .hero,
+  .paper-grid,
+  .import-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-card-head {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+  }
+
+  .topbar,
+  .import-panel,
+  .search-box {
+    display: none;
+  }
+
+  main {
+    width: 100%;
+  }
+
+  .hero {
+    min-height: auto;
+  }
+
+  .paper-card,
+  .metric,
+  .query-card,
+  .summary-block {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+</style>
+  </head>
+  <body class="is-exported">
+    <header class="topbar">
+      <a class="brand" href="#hero" aria-label="回到顶部">
+        <span class="brand-mark">AD</span>
+        <span>ArXiv Discovery</span>
+      </a>
+      <nav class="nav">
+        <a href="#summary">整体摘要</a>
+        <a href="#papers">论文卡片</a>
+        <a href="#archive">归档表</a>
+      </nav>
+      <label class="search-box">
+        <span>搜索</span>
+        <input id="keywordInput" type="search" placeholder="标题 / 作者 / 摘要" />
+      </label>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Academic Radar Poster</p>
+          <h1>论文速读雷达</h1>
+          <p id="heroText" class="hero-text">
+            导入 `results.json` 与 `report.md`，把 arXiv 检索结果和中文速读报告渲染为可浏览、可检索、可打印的学术海报。
+          </p>
+</div>
+        <div class="hero-dashboard" aria-label="报告概览">
+          <div class="metric">
+            <span id="paperCount">0</span>
+            <strong>论文数量</strong>
+          </div>
+          <div class="metric">
+            <span id="sortValue">未导入</span>
+            <strong>排序方式</strong>
+          </div>
+          <div class="query-card">
+            <span>当前关键词</span>
+            <strong id="queryValue">等待导入</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="summary" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Overview</p>
+          <h2>整体摘要</h2>
+        </div>
+        <article id="overallSummary" class="summary-block">
+          请先导入完整流程生成的 `results.json` 和 `report.md`。如果只有 `results.json`，页面仍会展示论文元数据，但不会显示中文摘要。
+        </article>
+      </section>
+
+      <section id="papers" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Paper Radar</p>
+          <h2>论文卡片</h2>
+        </div>
+        <div id="paperGrid" class="paper-grid empty">
+          <p>尚未导入论文数据。</p>
+        </div>
+      </section>
+
+      <section id="archive" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Archive</p>
+          <h2>论文归档</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>Title</th>
+                <th>arXiv ID</th>
+                <th>日期</th>
+                <th>相关性</th>
+              </tr>
+            </thead>
+            <tbody id="archiveBody">
+              <tr>
+                <td colspan="5">尚未导入论文数据。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="paperTemplate">
+      <article class="paper-card">
+        <div class="paper-card-head">
+          <div>
+            <p class="paper-index"></p>
+            <h3></h3>
+          </div>
+          <div class="radar-slot"></div>
+        </div>
+        <dl class="meta-list"></dl>
+        <div class="link-row"></div>
+        <div class="paper-body">
+          <h4>摘要</h4>
+          <p class="paper-summary"></p>
+          <h4>推荐原因</h4>
+          <p class="paper-reason"></p>
+        </div>
+      </article>
+    </template>
+
+    <script>
+window.ARXIV_DISCOVERY_DATA = {"results": {"query": "simulation", "category": null, "sort_by": "relevance", "sort_order": "descending", "requested_results": 2, "date_from": null, "date_to": null, "keywords": ["simulation"], "returned_results": 2, "papers": [{"arxiv_id": "1003.3784v1", "title": "Simulating Customer Experience and Word Of Mouth in Retail - A Case Study", "summary": "Agents offer a new and exciting way of understanding the world of work. In this paper we describe the development of agent-based simulation models, designed to help to understand the relationship between people management practices and retail performance. We report on the current development of our simulation models which includes new features concerning the evolution of customers over time. To test the features we have conducted a series of experiments dealing with customer pool sizes, standard and noise reduction modes, and the spread of customers' word of mouth. To validate and evaluate our model, we introduce new performance measure specific to retail operations. We show that by varying different parameters in our model we can simulate a range of customer experiences leading to significant differences in performance measures. Ultimately, we are interested in better understanding the impact of changes in staff behavior due to changes in store management practices. Our multi-disciplinary research team draws upon expertise from work psychologists and computer scientists. Despite the fact we are working within a relatively novel and complex domain, it is clear that intelligent agents offer potential for fostering sustainable organizational capabilities in the future.", "authors": ["Peer-Olaf Siebers", "Uwe Aickelin", "Helen Celia", "Chris Clegg"], "published": "2010-03-19T12:31:55Z", "updated": "2010-03-19T12:31:55Z", "abstract_url": "http://arxiv.org/abs/1003.3784v1", "pdf_url": "https://arxiv.org/pdf/1003.3784v1", "primary_category": "cs.MA", "categories": ["cs.MA", "cs.CE"]}, {"arxiv_id": "2104.08203v1", "title": "Why Machine Learning Integrated Patient Flow Simulation?", "summary": "Patient flow analysis can be studied from a clinical and or operational perspective using simulation. Traditional statistical methods such as stochastic distribution methods have been used to construct patient flow simulation submodels such as patient inflow, Length of Stay (LoS), Cost of Treatment (CoT) and Clinical Pathway (CP) models. However, patient inflow demonstrates seasonality, trend and variation over time. LoS, CoT and CP are significantly determined by attributes of patients and clinical and laboratory test results. For this reason, patient flow simulation models constructed using traditional statistical methods are criticized for ignoring heterogeneity and their contribution to personalized and value based healthcare. On the other hand, machine learning methods have proven to be efficient to study and predict admission rate, LoS, CoT, and CP. This paper, hence, describes why coupling machine learning with patient flow simulation is important and proposes a conceptual architecture that shows how to integrate machine learning with patient flow simulation.", "authors": ["Tesfamariam M. Abuhay", "Adane Mamuye", "Stewart Robinson", "Sergey V. Kovalchuk"], "published": "2021-04-16T16:23:17Z", "updated": "2021-04-16T16:23:17Z", "abstract_url": "http://arxiv.org/abs/2104.08203v1", "pdf_url": "https://arxiv.org/pdf/2104.08203v1", "primary_category": "cs.LG", "categories": ["cs.LG", "cs.AI", "cs.MA"]}]}, "reportText": "# arXiv Discovery：simulation\n\n- 搜索关键词：`simulation`\n- arXiv 分类：`cs.MA` / `cs.LG` / `cs.AI` / `cs.CE`\n- 排序方式：`relevance/descending`\n- 处理论文数：`2`\n- 备注：`无`\n\n## 整体摘要\n\n本批论文聚焦于模拟技术在不同领域的应用和研究。第一篇论文探讨了基于代理的模拟模型在零售业顾客体验和口碑传播中的应用，通过实验验证模型特性，并引入新的性能度量方法。第二篇论文讨论了将机器学习集成到患者流动模拟中的重要性，并提出了一个概念性架构，以改善个性化和基于价值的医疗保健。两篇论文均展示了模拟技术在解决复杂系统问题中的潜力和价值，对理解动态系统和优化决策具有重要意义。\n\n## 1. Simulating Customer Experience and Word Of Mouth in Retail - A Case Study\n\n- arXiv ID：`1003.3784v1`\n- 链接：[Abstract](https://arxiv.org/abs/1003.3784v1)，[PDF](https://arxiv.org/pdf/1003.3784v1)\n- 作者：Peer-Olaf Siebers；Uwe Aickelin；Helen Celia；Chris Clegg\n- 发布/更新：2010-03-19T12:31:55Z / 2010-03-19T12:31:55Z\n\n### 摘要\n\n**研究问题**\n\n本文旨在通过基于代理的模拟模型，理解人员管理实践与零售业绩之间的关系，并模拟顾客随时间演变对零售业绩的影响。\n\n**研究方法**\n\n研究者开发了包含顾客演变特征的代理模型，并通过一系列实验检验模型特性，涉及顾客池大小、标准和噪声降低模式以及顾客口碑的传播。为验证和评估模型，引入了特定于零售操作的新性能度量。\n\n**研究结论**\n\n① 通过改变模型中的不同参数，可以模拟一系列顾客体验，导致性能度量上显著差异。\n\n② 模型验证了人员管理实践变化对顾客行为的影响，为理解商店管理实践变化对员工行为的影响提供了见解。\n\n### 具体领域\n\n- 零售业绩 / 代理模型\n\n### 推荐原因\n\n该研究为理解零售业中的人员管理实践对顾客满意度和口碑的影响提供了新的视角，对零售管理实践的模拟研究具有参考价值。\n\n## 2. Why Machine Learning Integrated Patient Flow Simulation?\n\n- arXiv ID：`2104.08203v1`\n- 链接：[Abstract](https://arxiv.org/abs/2104.08203v1)，[PDF](https://arxiv.org/pdf/2104.08203v1)\n- 作者：Tesfamariam M. Abuhay；Adane Mamuye；Stewart Robinson；Sergey V. Kovalchuk\n- 发布/更新：2021-04-16T16:23:17Z / 2021-04-16T16:23:17Z\n\n### 摘要\n\n**研究问题**\n\n本文探讨了将机器学习集成到患者流动模拟中的重要性，并提出了一个概念性架构，以改善个性化和基于价值的医疗保健。\n\n**研究方法**\n\n论文分析了传统统计方法在构建患者流动模拟子模型中的局限性，并提出利用机器学习方法来提高患者入院率、住院时长、治疗成本和临床路径的预测效率。\n\n**研究结论**\n\n① 机器学习方法能有效预测患者流动的关键指标，提高模拟的准确性和可靠性。\n\n② 提出的概念性架构有助于整合机器学习与患者流动模拟，促进个性化医疗和价值医疗的发展。\n\n### 具体领域\n\n- 医疗模拟 / 机器学习\n\n### 推荐原因\n\n该论文为医疗领域中患者流动模拟提供了新的视角，对提高模拟模型的准确性和实用性具有重要意义。\n\n## 阅读顺序\n\n1. 首先阅读“Simulating Customer Experience and Word Of Mouth in Retail - A Case Study”，了解代理模型在零售业中的应用。\n2. 其次阅读“Why Machine Learning Integrated Patient Flow Simulation?”，探讨机器学习在医疗模拟中的集成价值。"};
+</script>
+<script>
+const state = {
+  results: null,
+  reportText: "",
+  parsedReport: { overall: "", papers: [] },
+  mergedPapers: [],
+};
+
+const nodes = {
+  resultsFile: document.querySelector("#resultsFile"),
+  reportFile: document.querySelector("#reportFile"),
+  keywordInput: document.querySelector("#keywordInput"),
+  paperCount: document.querySelector("#paperCount"),
+  sortValue: document.querySelector("#sortValue"),
+  queryValue: document.querySelector("#queryValue"),
+  heroText: document.querySelector("#heroText"),
+  overallSummary: document.querySelector("#overallSummary"),
+  paperGrid: document.querySelector("#paperGrid"),
+  archiveBody: document.querySelector("#archiveBody"),
+  paperTemplate: document.querySelector("#paperTemplate"),
+};
+
+if (nodes.resultsFile) {
+  nodes.resultsFile.addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    state.results = JSON.parse(text);
+    render();
+  });
+}
+
+if (nodes.reportFile) {
+  nodes.reportFile.addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    state.reportText = await file.text();
+    state.parsedReport = parseReport(state.reportText);
+    render();
+  });
+}
+
+nodes.keywordInput.addEventListener("input", () => {
+  applySearch(nodes.keywordInput.value.trim());
+});
+
+const embedded = window.ARXIV_DISCOVERY_DATA;
+if (embedded?.results) {
+  document.body.classList.add("is-exported");
+  state.results = embedded.results;
+  state.reportText = embedded.reportText || "";
+  state.parsedReport = parseReport(state.reportText);
+  render();
+}
+
+function parseReport(markdown) {
+  const overallMatch = markdown.match(/##\s*整体摘要\s*([\s\S]*?)(?=\n##\s+\d+\.|\n##\s+阅读顺序|\n##\s+[^\n]+|$)/);
+  const papers = [];
+  const paperPattern = /##\s+(\d+)\.\s+(.+?)\n([\s\S]*?)(?=\n##\s+\d+\.|\n##\s+阅读顺序|$)/g;
+  let match;
+  while ((match = paperPattern.exec(markdown)) !== null) {
+    const body = match[3];
+    papers.push({
+      index: Number(match[1]),
+      title: match[2].trim(),
+      arxivId: pick(body, /arXiv ID[：:]\s*`?([^`\n]+)`?/),
+      authors: pick(body, /作者[：:]\s*([^\n]+)/),
+      date: pick(body, /发布\/更新[：:]\s*([^\n]+)/),
+      summary: researchSummary(body),
+      reason: section(body, "推荐原因"),
+    });
+  }
+  return {
+    overall: cleanup(overallMatch?.[1] || ""),
+    papers,
+  };
+}
+
+function pick(text, pattern) {
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function section(text, title) {
+  const pattern = new RegExp(`###\\s*${title}\\s*([\\s\\S]*?)(?=\\n###\\s+|$)`);
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function researchSummary(text) {
+  const parts = [
+    ["研究问题", section(text, "研究问题")],
+    ["研究方法", section(text, "研究方法")],
+    ["研究结论", section(text, "研究结论")],
+    ["具体领域", section(text, "具体领域")],
+  ].filter(([, value]) => value);
+  return parts.map(([title, value]) => `${title}：${value}`).join("\n\n");
+}
+
+function cleanup(text) {
+  return text
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/\[[^\]]+\]\([^)]+\)/g, (value) => value.replace(/\(([^)]+)\)/, ""))
+    .replace(/\s+\n/g, "\n")
+    .trim();
+}
+
+function render() {
+  const results = state.results || {};
+  const metadataPapers = Array.isArray(results.papers) ? results.papers : [];
+  state.mergedPapers = metadataPapers.map((paper, index) => mergePaper(paper, index));
+
+  nodes.paperCount.textContent = String(metadataPapers.length || state.parsedReport.papers.length || 0);
+  nodes.sortValue.textContent = results.sort_by ? `${results.sort_by}/${results.sort_order || "descending"}` : "未导入";
+  nodes.queryValue.textContent = results.query || "等待导入";
+  nodes.overallSummary.textContent =
+    state.parsedReport.overall ||
+    (metadataPapers.length ? "已导入 arXiv 元数据。继续导入 report.md 后，将显示整体摘要和单篇推荐原因。" : "请先导入完整流程生成的 results.json 和 report.md。");
+
+  renderPapers(state.mergedPapers.length ? state.mergedPapers : state.parsedReport.papers);
+  renderArchive(state.mergedPapers);
+  applySearch(nodes.keywordInput.value.trim());
+}
+
+function mergePaper(paper, index) {
+  const reportPaper = state.parsedReport.papers.find((item) => samePaper(item, paper, index));
+  const authors = Array.isArray(paper.authors) ? paper.authors.join("；") : paper.authors || reportPaper?.authors || "";
+  return {
+    index: index + 1,
+    title: paper.title || reportPaper?.title || `Paper ${index + 1}`,
+    arxivId: paper.arxiv_id || reportPaper?.arxivId || "",
+    authors,
+    date: dateOnly(paper.published || paper.updated || reportPaper?.date || ""),
+    abstractUrl: paper.abstract_url || "",
+    pdfUrl: paper.pdf_url || "",
+    categories: paper.categories || [],
+    arxivSummary: paper.summary || "",
+    summary: reportPaper?.summary || "尚未导入 report.md，暂无中文摘要。",
+    reason: reportPaper?.reason || "尚未导入 report.md，暂无推荐原因。",
+  };
+}
+
+function samePaper(reportPaper, paper, index) {
+  if (reportPaper.arxivId && paper.arxiv_id) return reportPaper.arxivId === paper.arxiv_id;
+  if (reportPaper.title && paper.title) return normalize(reportPaper.title) === normalize(paper.title);
+  return reportPaper.index === index + 1;
+}
+
+function normalize(value) {
+  return String(value).replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function dateOnly(value) {
+  return String(value).slice(0, 10) || "未知";
+}
+
+function renderPapers(papers) {
+  nodes.paperGrid.innerHTML = "";
+  nodes.paperGrid.classList.toggle("empty", papers.length === 0);
+  if (!papers.length) {
+    nodes.paperGrid.textContent = "尚未导入论文数据。";
+    return;
+  }
+
+  papers.forEach((paper, index) => {
+    const fragment = nodes.paperTemplate.content.cloneNode(true);
+    const card = fragment.querySelector(".paper-card");
+    card.dataset.search = [paper.title, paper.authors, paper.summary, paper.reason, paper.arxivSummary].join(" ").toLowerCase();
+    fragment.querySelector(".paper-index").textContent = `Paper ${String(index + 1).padStart(2, "0")}`;
+    fragment.querySelector("h3").textContent = paper.title;
+    fragment.querySelector(".meta-list").innerHTML = metadataMarkup(paper);
+    fragment.querySelector(".link-row").innerHTML = linksMarkup(paper);
+    fragment.querySelector(".paper-summary").textContent = paper.summary || "暂无摘要。";
+    fragment.querySelector(".paper-reason").textContent = paper.reason || "暂无推荐原因。";
+    fragment.querySelector(".radar-slot").innerHTML = radarSvg(scorePaper(paper));
+    nodes.paperGrid.appendChild(fragment);
+  });
+}
+
+function metadataMarkup(paper) {
+  return [
+    ["arXiv", paper.arxivId || "未知"],
+    ["日期", paper.date || "未知"],
+    ["作者", paper.authors || "未知"],
+    ["分类", Array.isArray(paper.categories) ? paper.categories.join(" / ") : "未知"],
+  ]
+    .map(([key, value]) => `<dt>${escapeHtml(key)}</dt><dd>${escapeHtml(value)}</dd>`)
+    .join("");
+}
+
+function linksMarkup(paper) {
+  const links = [];
+  if (paper.abstractUrl) links.push(`<a href="${escapeAttribute(paper.abstractUrl)}" target="_blank" rel="noreferrer">Abstract</a>`);
+  if (paper.pdfUrl) links.push(`<a href="${escapeAttribute(paper.pdfUrl)}" target="_blank" rel="noreferrer">PDF</a>`);
+  return links.join("") || "<span>暂无链接</span>";
+}
+
+function scorePaper(paper) {
+  const query = normalize(state.results?.query || "");
+  const text = normalize([paper.title, paper.arxivSummary, paper.summary].join(" "));
+  const tokens = query.split(/\s+/).filter(Boolean);
+  const matched = tokens.filter((token) => text.includes(token)).length;
+  const relevance = tokens.length ? Math.round((matched / tokens.length) * 100) : 70;
+  const summaryDepth = Math.min(100, Math.round(((paper.summary || "").length / 260) * 100));
+  const metadata = [paper.title, paper.authors, paper.date, paper.abstractUrl, paper.pdfUrl].filter(Boolean).length * 20;
+  const freshness = freshnessScore(paper.date);
+  const readability = Math.min(100, Math.round(((paper.reason || "").length / 60) * 100));
+  return [
+    ["相关性", clamp(relevance)],
+    ["摘要", clamp(summaryDepth)],
+    ["元数据", clamp(metadata)],
+    ["时效", clamp(freshness)],
+    ["推荐", clamp(readability)],
+  ];
+}
+
+function freshnessScore(dateText) {
+  const time = Date.parse(dateText);
+  if (Number.isNaN(time)) return 55;
+  const days = (Date.now() - time) / 86400000;
+  if (days <= 30) return 100;
+  if (days <= 365) return 85;
+  if (days <= 1095) return 70;
+  return 55;
+}
+
+function clamp(value) {
+  return Math.max(0, Math.min(100, value));
+}
+
+function radarSvg(scores) {
+  const size = 132;
+  const center = size / 2;
+  const radius = 44;
+  const points = scores.map(([, score], index) => point(center, radius * (score / 100), index, scores.length));
+  const grid = [0.33, 0.66, 1]
+    .map((scale) => polygon(scores.map((_, index) => point(center, radius * scale, index, scores.length)), "none", "rgba(245,240,230,.18)"))
+    .join("");
+  const axes = scores
+    .map(([label], index) => {
+      const end = point(center, radius, index, scores.length);
+      const labelPoint = point(center, radius + 14, index, scores.length);
+      return `<line x1="${center}" y1="${center}" x2="${end.x}" y2="${end.y}" stroke="rgba(245,240,230,.14)" /><text x="${labelPoint.x}" y="${labelPoint.y}" text-anchor="middle">${label}</text>`;
+    })
+    .join("");
+  return `<svg class="radar" viewBox="0 0 ${size} ${size}" role="img" aria-label="论文雷达评分">${grid}${axes}${polygon(points, "rgba(214,170,88,.35)", "#d6aa58")}</svg>`;
+}
+
+function point(center, radius, index, total) {
+  const angle = -Math.PI / 2 + (Math.PI * 2 * index) / total;
+  return {
+    x: Number((center + Math.cos(angle) * radius).toFixed(2)),
+    y: Number((center + Math.sin(angle) * radius).toFixed(2)),
+  };
+}
+
+function polygon(points, fill, stroke) {
+  const value = points.map((item) => `${item.x},${item.y}`).join(" ");
+  return `<polygon points="${value}" fill="${fill}" stroke="${stroke}" stroke-width="1.4" />`;
+}
+
+function renderArchive(papers) {
+  if (!papers.length) {
+    nodes.archiveBody.innerHTML = `<tr><td colspan="5">尚未导入论文数据。</td></tr>`;
+    return;
+  }
+  nodes.archiveBody.innerHTML = papers
+    .map((paper, index) => {
+      const score = average(scorePaper(paper).map((item) => item[1]));
+      return `<tr><td>${index + 1}</td><td>${escapeHtml(paper.title)}</td><td>${escapeHtml(paper.arxivId)}</td><td>${escapeHtml(paper.date)}</td><td>${score} / 100</td></tr>`;
+    })
+    .join("");
+}
+
+function average(values) {
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function applySearch(keyword) {
+  const normalized = keyword.toLowerCase();
+  document.querySelectorAll(".paper-card").forEach((card) => {
+    const matched = !normalized || card.dataset.search.includes(normalized);
+    card.classList.toggle("hidden", !matched);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll("`", "&#096;");
+}
+
+</script>
+  </body>
+</html>

@@ -119,12 +119,12 @@ main {
 }
 
 .hero {
-  min-height: 86vh;
+  min-height: 58vh;
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
-  gap: clamp(1.5rem, 4vw, 4rem);
+  gap: clamp(1.25rem, 3vw, 3rem);
   align-items: center;
-  padding: clamp(3rem, 8vw, 7rem) 0 4rem;
+  padding: clamp(2rem, 5vw, 4rem) 0 2.5rem;
 }
 
 .eyebrow {
@@ -145,7 +145,7 @@ h3 {
 
 h1 {
   max-width: 10ch;
-  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-size: clamp(2.7rem, 7vw, 5.4rem);
   font-weight: 700;
 }
 
@@ -158,9 +158,9 @@ h3 {
 }
 
 .hero-text {
-  max-width: 42rem;
+  max-width: 38rem;
   color: var(--muted);
-  font-size: 1.08rem;
+  font-size: 1rem;
 }
 
 .import-panel {
@@ -190,12 +190,12 @@ h3 {
 
 .hero-dashboard {
   display: grid;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
 .metric,
 .query-card {
-  padding: 1.15rem;
+  padding: 0.95rem;
   border: 1px solid var(--line);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
   box-shadow: var(--shadow);
@@ -318,13 +318,26 @@ h3 {
 }
 
 .paper-body h4 {
-  margin: 0.8rem 0 0.35rem;
+  margin: 0.9rem 0 0.35rem;
   color: var(--gold);
+  font-size: 0.98rem;
 }
 
 .paper-body p {
   margin: 0;
   color: #eee6d8;
+  white-space: normal;
+}
+
+.summary-item {
+  margin: 0.65rem 0;
+}
+
+.summary-item strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--gold);
+  font-size: 0.92rem;
 }
 
 .radar {
@@ -448,7 +461,7 @@ mark {
           <p class="eyebrow">Academic Radar Poster</p>
           <h1>论文速读雷达</h1>
           <p id="heroText" class="hero-text">
-            导入 `results.json` 与 `report.md`，把 arXiv 检索结果和中文速读报告渲染为可浏览、可检索、可打印的学术海报。
+            把零散论文压缩成一张可检索、可浏览、可打印的研究地图。
           </p>
 </div>
         <div class="hero-dashboard" aria-label="报告概览">
@@ -525,10 +538,9 @@ mark {
         <dl class="meta-list"></dl>
         <div class="link-row"></div>
         <div class="paper-body">
-          <h4>摘要</h4>
-          <p class="paper-summary"></p>
-          <h4>推荐原因</h4>
-          <p class="paper-reason"></p>
+          <div class="paper-summary"></div>
+          <div class="paper-field"></div>
+          <div class="paper-reason"></div>
         </div>
       </article>
     </template>
@@ -604,7 +616,9 @@ function parseReport(markdown) {
       arxivId: pick(body, /arXiv ID[：:]\s*`?([^`\n]+)`?/),
       authors: pick(body, /作者[：:]\s*([^\n]+)/),
       date: pick(body, /发布\/更新[：:]\s*([^\n]+)/),
+      summaryParts: researchSummaryParts(body),
       summary: researchSummary(body),
+      field: section(body, "具体领域"),
       reason: section(body, "推荐原因"),
     });
   }
@@ -623,12 +637,26 @@ function section(text, title) {
   return cleanup(text.match(pattern)?.[1] || "");
 }
 
+function boldSection(text, title) {
+  const pattern = new RegExp(`\\*\\*${title}\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*[^*]+\\*\\*|\\n###\\s+|$)`);
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function researchSummaryParts(text) {
+  const summaryBlock = section(text, "摘要");
+  return {
+    question: boldSection(summaryBlock, "研究问题") || section(text, "研究问题"),
+    method: boldSection(summaryBlock, "研究方法") || section(text, "研究方法"),
+    findings: boldSection(summaryBlock, "研究结论") || section(text, "研究结论"),
+  };
+}
+
 function researchSummary(text) {
+  const summaryParts = researchSummaryParts(text);
   const parts = [
-    ["研究问题", section(text, "研究问题")],
-    ["研究方法", section(text, "研究方法")],
-    ["研究结论", section(text, "研究结论")],
-    ["具体领域", section(text, "具体领域")],
+    ["研究问题", summaryParts.question],
+    ["研究方法", summaryParts.method],
+    ["研究结论", summaryParts.findings],
   ].filter(([, value]) => value);
   return parts.map(([title, value]) => `${title}：${value}`).join("\n\n");
 }
@@ -671,6 +699,8 @@ function mergePaper(paper, index) {
     pdfUrl: paper.pdf_url || "",
     categories: paper.categories || [],
     arxivSummary: paper.summary || "",
+    summaryParts: reportPaper?.summaryParts || null,
+    field: reportPaper?.field || "",
     summary: reportPaper?.summary || "尚未导入 report.md，暂无中文摘要。",
     reason: reportPaper?.reason || "尚未导入 report.md，暂无推荐原因。",
   };
@@ -706,11 +736,42 @@ function renderPapers(papers) {
     fragment.querySelector("h3").textContent = paper.title;
     fragment.querySelector(".meta-list").innerHTML = metadataMarkup(paper);
     fragment.querySelector(".link-row").innerHTML = linksMarkup(paper);
-    fragment.querySelector(".paper-summary").textContent = paper.summary || "暂无摘要。";
-    fragment.querySelector(".paper-reason").textContent = paper.reason || "暂无推荐原因。";
+    fragment.querySelector(".paper-summary").innerHTML = summaryMarkup(paper);
+    fragment.querySelector(".paper-field").innerHTML = sectionMarkup("具体领域", paper.field || "暂无具体领域。");
+    fragment.querySelector(".paper-reason").innerHTML = sectionMarkup("推荐原因", paper.reason || "暂无推荐原因。");
     fragment.querySelector(".radar-slot").innerHTML = radarSvg(scorePaper(paper));
     nodes.paperGrid.appendChild(fragment);
   });
+}
+
+function summaryMarkup(paper) {
+  const parts = paper.summaryParts || {};
+  if (parts.question || parts.method || parts.findings) {
+    return [
+      `<h4>摘要</h4>`,
+      summaryItemMarkup("研究问题", parts.question),
+      summaryItemMarkup("研究方法", parts.method),
+      summaryItemMarkup("研究结论", parts.findings),
+    ].join("");
+  }
+  return sectionMarkup("摘要", paper.summary || "暂无摘要。");
+}
+
+function summaryItemMarkup(title, value) {
+  if (!value) return "";
+  return `<div class="summary-item"><strong>${escapeHtml(title)}</strong><p>${formatMultiline(value)}</p></div>`;
+}
+
+function sectionMarkup(title, value) {
+  return `<h4>${escapeHtml(title)}</h4><p>${formatMultiline(value)}</p>`;
+}
+
+function formatMultiline(value) {
+  return escapeHtml(value)
+    .split(/\n+/)
+    .filter(Boolean)
+    .map((line) => line.trim())
+    .join("<br />");
 }
 
 function metadataMarkup(paper) {
@@ -725,10 +786,10 @@ function metadataMarkup(paper) {
 }
 
 function linksMarkup(paper) {
-  const links = [];
-  if (paper.abstractUrl) links.push(`<a href="${escapeAttribute(paper.abstractUrl)}" target="_blank" rel="noreferrer">Abstract</a>`);
-  if (paper.pdfUrl) links.push(`<a href="${escapeAttribute(paper.pdfUrl)}" target="_blank" rel="noreferrer">PDF</a>`);
-  return links.join("") || "<span>暂无链接</span>";
+  if (paper.pdfUrl) {
+    return `<a href="${escapeAttribute(paper.pdfUrl)}" target="_blank" rel="noreferrer">PDF下载</a>`;
+  }
+  return "<span>暂无 PDF</span>";
 }
 
 function scorePaper(paper) {

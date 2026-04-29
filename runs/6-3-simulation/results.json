@@ -1,0 +1,130 @@
+{
+  "query": "simulation",
+  "category": null,
+  "sort_by": "relevance",
+  "sort_order": "descending",
+  "requested_results": 6,
+  "date_from": "2023-05-01",
+  "date_to": "2026-04-30",
+  "keywords": [
+    "simulation"
+  ],
+  "returned_results": 6,
+  "papers": [
+    {
+      "arxiv_id": "2410.16956v1",
+      "title": "Towards an Assisted Simulation Planning for Co-Simulation of Cyber-Physical Energy Systems",
+      "summary": "Increasing complexity in the power system and the transformation towards a smart grid lead to the necessity of new tools and methods for the development and testing of new technologies. One testing method is co-simulation, which allows coupling simulation components from different domains to test their interaction. Because the manual configuration of complex large-scale co-simulation scenarios can be error-prone, we propose an approach for assisting the user in the development of co-simulation scenarios. Our approach uses an information model, a component catalog implemented in a Semantic Media Wiki, and Semantic Web technologies to assist the high-level modeling of co-simulation scenarios, recommend suitable simulation components, and validate co-simulation scenarios. This assistance aims to improve the usability of co-simulation in the development of interdisciplinary, large-scale scenarios.",
+      "authors": [
+        "Jan Sören Schwarz",
+        "Cornelius Steinbrink",
+        "Sebastian Lehnhoff"
+      ],
+      "published": "2024-10-22T12:36:39Z",
+      "updated": "2024-10-22T12:36:39Z",
+      "abstract_url": "http://arxiv.org/abs/2410.16956v1",
+      "pdf_url": "https://arxiv.org/pdf/2410.16956v1",
+      "primary_category": "cs.CE",
+      "categories": [
+        "cs.CE"
+      ]
+    },
+    {
+      "arxiv_id": "2308.00600v1",
+      "title": "Simulating the social influence in transport mode choices",
+      "summary": "Agent-based simulations have been used in modeling transportation systems for traffic management and passenger flows. In this work, we hope to shed light on the complex factors that influence transportation mode decisions within developing countries, using Colombia as a case study. We model an ecosystem of human agents that decide at each time step on the mode of transportation they would take to work. Their decision is based on a combination of their personal satisfaction with the journey they had just taken, which is evaluated across a personal vector of needs, the information they crowdsource from their prevailing social network, and their personal uncertainty about the experience of trying a new transport solution. We simulate different network structures to analyze the social influence for different decision-makers. We find that in low/medium connected groups inquisitive people actively change modes cyclically over the years while imitators cluster rapidly and change less frequently.",
+      "authors": [
+        "Kathleen Salazar-Serna",
+        "Lynnette Hui Xian Ng",
+        "Lorena Cadavid",
+        "Carlos J. Franco",
+        "Kathleen Carley"
+      ],
+      "published": "2023-08-01T15:28:18Z",
+      "updated": "2023-08-01T15:28:18Z",
+      "abstract_url": "http://arxiv.org/abs/2308.00600v1",
+      "pdf_url": "https://arxiv.org/pdf/2308.00600v1",
+      "primary_category": "physics.soc-ph",
+      "categories": [
+        "physics.soc-ph",
+        "cs.MA",
+        "cs.SI"
+      ]
+    },
+    {
+      "arxiv_id": "2409.11392v1",
+      "title": "Temporal Load Imbalance on Ondes3D Seismic Simulator for Different Multicore Architectures",
+      "summary": "The variety of today's multicore architectures motivates researchers to explore parallel scientific applications on different platforms. Load imbalance is one performance issue that can prejudice parallel applications from exploiting the computational power of these platforms. Ondes3D is a scientific application for seismic wave simulation used to assess the geological impact of earthquakes. Its parallelism relies on applying a regular domain decomposition in the geological domain provided and distributing each sub-domain to MPI ranks. Previous works investigate the significant spatial and temporal imbalance in Ondes3D and suggest new parallelization and load balancing techniques to minimize them. However, none explored its execution on different architectures. Our paper evaluates the performance of Ondes3D for two earthquake scenarios on eight different multicore architectures, including Intel, AMD, and ARM processors. We measure the load distribution per MPI rank, evaluate the temporal load imbalance, and compare the execution of the application's kernels. Our results show that the temporal load imbalance in Ondes3D depends on the architecture chosen, with some platforms minimizing such imbalance more effectively.",
+      "authors": [
+        "Ana Luisa Veroneze Solórzano",
+        "Philippe Olivier Alexandre Navaux",
+        "Lucas Mello Schnorr"
+      ],
+      "published": "2024-09-17T17:50:52Z",
+      "updated": "2024-09-17T17:50:52Z",
+      "abstract_url": "http://arxiv.org/abs/2409.11392v1",
+      "pdf_url": "https://arxiv.org/pdf/2409.11392v1",
+      "primary_category": "cs.PF",
+      "categories": [
+        "cs.PF",
+        "cs.DC"
+      ]
+    },
+    {
+      "arxiv_id": "2409.00742v1",
+      "title": "Simulation of Social Media-Driven Bubble Formation in Financial Markets using an Agent-Based Model with Hierarchical Influence Network",
+      "summary": "We propose that a tree-like hierarchical structure represents a simple and effective way to model the emergent behaviour of financial markets, especially markets where there exists a pronounced intersection between social media influences and investor behaviour. To explore this hypothesis, we introduce an agent-based model of financial markets, where trading agents are embedded in a hierarchical network of communities, and communities influence the strategies and opinions of traders. Empirical analysis of the model shows that its behaviour conforms to several stylized facts observed in real financial markets; and the model is able to realistically simulate the effects that social media-driven phenomena, such as echo chambers and pump-and-dump schemes, have on financial markets.",
+      "authors": [
+        "Gonzalo Bohorquez",
+        "John Cartlidge"
+      ],
+      "published": "2024-09-01T15:09:35Z",
+      "updated": "2024-09-01T15:09:35Z",
+      "abstract_url": "http://arxiv.org/abs/2409.00742v1",
+      "pdf_url": "https://arxiv.org/pdf/2409.00742v1",
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA",
+        "cs.AI",
+        "q-fin.TR"
+      ]
+    },
+    {
+      "arxiv_id": "2405.08032v2",
+      "title": "Exploring the Potential of Conversational AI Support for Agent-Based Social Simulation Model Design",
+      "summary": "ChatGPT, the AI-powered chatbot with a massive user base of hundreds of millions, has become a global phenomenon. However, the use of Conversational AI Systems (CAISs) like ChatGPT for research in the field of Social Simulation is still limited. Specifically, there is no evidence of its usage in Agent-Based Social Simulation (ABSS) model design. This paper takes a crucial first step toward exploring the untapped potential of this emerging technology in the context of ABSS model design. The research presented here demonstrates how CAISs can facilitate the development of innovative conceptual ABSS models in a concise timeframe and with minimal required upfront case-based knowledge. By employing advanced prompt engineering techniques and adhering to the Engineering ABSS framework, we have constructed a comprehensive prompt script that enables the design of conceptual ABSS models with or by the CAIS. A proof-of-concept application of the prompt script, used to generate the conceptual ABSS model for a case study on the impact of adaptive architecture in a museum environment, illustrates the practicality of the approach. Despite occasional inaccuracies and conversational divergence, the CAIS proved to be a valuable companion for ABSS modellers.",
+      "authors": [
+        "Peer-Olaf Siebers"
+      ],
+      "published": "2024-05-12T22:11:54Z",
+      "updated": "2025-10-07T17:52:42Z",
+      "abstract_url": "http://arxiv.org/abs/2405.08032v2",
+      "pdf_url": "https://arxiv.org/pdf/2405.08032v2",
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC",
+        "cs.AI",
+        "cs.CL",
+        "cs.SE"
+      ]
+    },
+    {
+      "arxiv_id": "2604.11466v1",
+      "title": "SLALOM: Simulation Lifecycle Analysis via Longitudinal Observation Metrics for Social Simulation",
+      "summary": "Large Language Model (LLM) agents offer a potentially-transformative path forward for generative social science but face a critical crisis of validity. Current simulation evaluation methodologies suffer from the \"stopped clock\" problem: they confirm that a simulation reached the correct final outcome while ignoring whether the trajectory leading to it was sociologically plausible. Because the internal reasoning of LLMs is opaque, verifying the \"black box\" of social mechanisms remains a persistent challenge. In this paper, we introduce SLALOM (Simulation Lifecycle Analysis via Longitudinal Observation Metrics), a framework that shifts validation from outcome verification to process fidelity. Drawing on Pattern-Oriented Modeling (POM), SLALOM treats social phenomena as multivariate time series that must traverse specific SLALOM gates, or intermediate waypoint constraints representing distinct phases. By utilizing Dynamic Time Warping (DTW) to align simulated trajectories with empirical ground truth, SLALOM offers a quantitative metric to assess structural realism, helping to differentiate plausible social dynamics from stochastic noise and contributing to more robust policy simulation standards.",
+      "authors": [
+        "Juhoon Lee",
+        "Joseph Seering"
+      ],
+      "published": "2026-04-13T13:40:50Z",
+      "updated": "2026-04-13T13:40:50Z",
+      "abstract_url": "http://arxiv.org/abs/2604.11466v1",
+      "pdf_url": "https://arxiv.org/pdf/2604.11466v1",
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA",
+        "cs.AI"
+      ]
+    }
+  ]
+}

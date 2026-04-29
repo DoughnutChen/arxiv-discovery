@@ -1,0 +1,18 @@
+[
+  {
+    "arxiv_id": "1003.3784v1",
+    "title": "Simulating Customer Experience and Word Of Mouth in Retail - A Case Study",
+    "pdf_url": "https://arxiv.org/pdf/1003.3784v1",
+    "pdf_path": "runs/2-simulation/pdfs/1003.3784v1.pdf",
+    "status": "exists",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2104.08203v1",
+    "title": "Why Machine Learning Integrated Patient Flow Simulation?",
+    "pdf_url": "https://arxiv.org/pdf/2104.08203v1",
+    "pdf_path": "runs/2-simulation/pdfs/2104.08203v1.pdf",
+    "status": "exists",
+    "error": ""
+  }
+]

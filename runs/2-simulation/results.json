@@ -1,0 +1,56 @@
+{
+  "query": "simulation",
+  "category": null,
+  "sort_by": "relevance",
+  "sort_order": "descending",
+  "requested_results": 2,
+  "date_from": null,
+  "date_to": null,
+  "keywords": [
+    "simulation"
+  ],
+  "returned_results": 2,
+  "papers": [
+    {
+      "arxiv_id": "1003.3784v1",
+      "title": "Simulating Customer Experience and Word Of Mouth in Retail - A Case Study",
+      "summary": "Agents offer a new and exciting way of understanding the world of work. In this paper we describe the development of agent-based simulation models, designed to help to understand the relationship between people management practices and retail performance. We report on the current development of our simulation models which includes new features concerning the evolution of customers over time. To test the features we have conducted a series of experiments dealing with customer pool sizes, standard and noise reduction modes, and the spread of customers' word of mouth. To validate and evaluate our model, we introduce new performance measure specific to retail operations. We show that by varying different parameters in our model we can simulate a range of customer experiences leading to significant differences in performance measures. Ultimately, we are interested in better understanding the impact of changes in staff behavior due to changes in store management practices. Our multi-disciplinary research team draws upon expertise from work psychologists and computer scientists. Despite the fact we are working within a relatively novel and complex domain, it is clear that intelligent agents offer potential for fostering sustainable organizational capabilities in the future.",
+      "authors": [
+        "Peer-Olaf Siebers",
+        "Uwe Aickelin",
+        "Helen Celia",
+        "Chris Clegg"
+      ],
+      "published": "2010-03-19T12:31:55Z",
+      "updated": "2010-03-19T12:31:55Z",
+      "abstract_url": "http://arxiv.org/abs/1003.3784v1",
+      "pdf_url": "https://arxiv.org/pdf/1003.3784v1",
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA",
+        "cs.CE"
+      ]
+    },
+    {
+      "arxiv_id": "2104.08203v1",
+      "title": "Why Machine Learning Integrated Patient Flow Simulation?",
+      "summary": "Patient flow analysis can be studied from a clinical and or operational perspective using simulation. Traditional statistical methods such as stochastic distribution methods have been used to construct patient flow simulation submodels such as patient inflow, Length of Stay (LoS), Cost of Treatment (CoT) and Clinical Pathway (CP) models. However, patient inflow demonstrates seasonality, trend and variation over time. LoS, CoT and CP are significantly determined by attributes of patients and clinical and laboratory test results. For this reason, patient flow simulation models constructed using traditional statistical methods are criticized for ignoring heterogeneity and their contribution to personalized and value based healthcare. On the other hand, machine learning methods have proven to be efficient to study and predict admission rate, LoS, CoT, and CP. This paper, hence, describes why coupling machine learning with patient flow simulation is important and proposes a conceptual architecture that shows how to integrate machine learning with patient flow simulation.",
+      "authors": [
+        "Tesfamariam M. Abuhay",
+        "Adane Mamuye",
+        "Stewart Robinson",
+        "Sergey V. Kovalchuk"
+      ],
+      "published": "2021-04-16T16:23:17Z",
+      "updated": "2021-04-16T16:23:17Z",
+      "abstract_url": "http://arxiv.org/abs/2104.08203v1",
+      "pdf_url": "https://arxiv.org/pdf/2104.08203v1",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.MA"
+      ]
+    }
+  ]
+}

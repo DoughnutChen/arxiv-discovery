@@ -1,0 +1,20 @@
+[
+  {
+    "pdf_path": "runs/2-3-ai/pdfs/2501.02842v1.pdf",
+    "text_path": "runs/2-3-ai/text/2501.02842v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 35,
+    "characters": 100104,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/2-3-ai/pdfs/2603.28944v1.pdf",
+    "text_path": "runs/2-3-ai/text/2603.28944v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 60,
+    "characters": 62545,
+    "error": ""
+  }
+]

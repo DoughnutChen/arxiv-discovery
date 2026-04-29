@@ -1,0 +1,20 @@
+[
+  {
+    "pdf_path": "runs/2-3-simulation/pdfs/2308.00600v1.pdf",
+    "text_path": "runs/2-3-simulation/text/2308.00600v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 12,
+    "characters": 43830,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/2-3-simulation/pdfs/2410.16956v1.pdf",
+    "text_path": "runs/2-3-simulation/text/2410.16956v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 7,
+    "characters": 33816,
+    "error": ""
+  }
+]

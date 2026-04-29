@@ -1,0 +1,11 @@
+{
+  "raw_query": "找6篇最近3年发表的，simulation相关的论文",
+  "search_query": "simulation",
+  "keywords": [
+    "simulation"
+  ],
+  "max_results": 6,
+  "date_from": "2023-05-01",
+  "date_to": "2026-04-30",
+  "date_note": "近 3 年"
+}

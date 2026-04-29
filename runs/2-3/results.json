@@ -1,0 +1,14 @@
+{
+  "query": "找2篇最近3年发表的，人工智能相关的论文",
+  "category": null,
+  "sort_by": "relevance",
+  "sort_order": "descending",
+  "requested_results": 6,
+  "date_from": null,
+  "date_to": null,
+  "keywords": [
+    "找2篇最近3年发表的，人工智能相关的论文"
+  ],
+  "returned_results": 0,
+  "papers": []
+}

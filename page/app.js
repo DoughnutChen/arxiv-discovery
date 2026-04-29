@@ -65,7 +65,9 @@ function parseReport(markdown) {
       arxivId: pick(body, /arXiv ID[：:]\s*`?([^`\n]+)`?/),
       authors: pick(body, /作者[：:]\s*([^\n]+)/),
       date: pick(body, /发布\/更新[：:]\s*([^\n]+)/),
+      summaryParts: researchSummaryParts(body),
       summary: researchSummary(body),
+      field: section(body, "具体领域"),
       reason: section(body, "推荐原因"),
     });
   }
@@ -84,12 +86,26 @@ function section(text, title) {
   return cleanup(text.match(pattern)?.[1] || "");
 }
 
+function boldSection(text, title) {
+  const pattern = new RegExp(`\\*\\*${title}\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*[^*]+\\*\\*|\\n###\\s+|$)`);
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function researchSummaryParts(text) {
+  const summaryBlock = section(text, "摘要");
+  return {
+    question: boldSection(summaryBlock, "研究问题") || section(text, "研究问题"),
+    method: boldSection(summaryBlock, "研究方法") || section(text, "研究方法"),
+    findings: boldSection(summaryBlock, "研究结论") || section(text, "研究结论"),
+  };
+}
+
 function researchSummary(text) {
+  const summaryParts = researchSummaryParts(text);
   const parts = [
-    ["研究问题", section(text, "研究问题")],
-    ["研究方法", section(text, "研究方法")],
-    ["研究结论", section(text, "研究结论")],
-    ["具体领域", section(text, "具体领域")],
+    ["研究问题", summaryParts.question],
+    ["研究方法", summaryParts.method],
+    ["研究结论", summaryParts.findings],
   ].filter(([, value]) => value);
   return parts.map(([title, value]) => `${title}：${value}`).join("\n\n");
 }
@@ -132,6 +148,8 @@ function mergePaper(paper, index) {
     pdfUrl: paper.pdf_url || "",
     categories: paper.categories || [],
     arxivSummary: paper.summary || "",
+    summaryParts: reportPaper?.summaryParts || null,
+    field: reportPaper?.field || "",
     summary: reportPaper?.summary || "尚未导入 report.md，暂无中文摘要。",
     reason: reportPaper?.reason || "尚未导入 report.md，暂无推荐原因。",
   };
@@ -167,11 +185,42 @@ function renderPapers(papers) {
     fragment.querySelector("h3").textContent = paper.title;
     fragment.querySelector(".meta-list").innerHTML = metadataMarkup(paper);
     fragment.querySelector(".link-row").innerHTML = linksMarkup(paper);
-    fragment.querySelector(".paper-summary").textContent = paper.summary || "暂无摘要。";
-    fragment.querySelector(".paper-reason").textContent = paper.reason || "暂无推荐原因。";
+    fragment.querySelector(".paper-summary").innerHTML = summaryMarkup(paper);
+    fragment.querySelector(".paper-field").innerHTML = sectionMarkup("具体领域", paper.field || "暂无具体领域。");
+    fragment.querySelector(".paper-reason").innerHTML = sectionMarkup("推荐原因", paper.reason || "暂无推荐原因。");
     fragment.querySelector(".radar-slot").innerHTML = radarSvg(scorePaper(paper));
     nodes.paperGrid.appendChild(fragment);
   });
+}
+
+function summaryMarkup(paper) {
+  const parts = paper.summaryParts || {};
+  if (parts.question || parts.method || parts.findings) {
+    return [
+      `<h4>摘要</h4>`,
+      summaryItemMarkup("研究问题", parts.question),
+      summaryItemMarkup("研究方法", parts.method),
+      summaryItemMarkup("研究结论", parts.findings),
+    ].join("");
+  }
+  return sectionMarkup("摘要", paper.summary || "暂无摘要。");
+}
+
+function summaryItemMarkup(title, value) {
+  if (!value) return "";
+  return `<div class="summary-item"><strong>${escapeHtml(title)}</strong><p>${formatMultiline(value)}</p></div>`;
+}
+
+function sectionMarkup(title, value) {
+  return `<h4>${escapeHtml(title)}</h4><p>${formatMultiline(value)}</p>`;
+}
+
+function formatMultiline(value) {
+  return escapeHtml(value)
+    .split(/\n+/)
+    .filter(Boolean)
+    .map((line) => line.trim())
+    .join("<br />");
 }
 
 function metadataMarkup(paper) {
@@ -186,10 +235,10 @@ function metadataMarkup(paper) {
 }
 
 function linksMarkup(paper) {
-  const links = [];
-  if (paper.abstractUrl) links.push(`<a href="${escapeAttribute(paper.abstractUrl)}" target="_blank" rel="noreferrer">Abstract</a>`);
-  if (paper.pdfUrl) links.push(`<a href="${escapeAttribute(paper.pdfUrl)}" target="_blank" rel="noreferrer">PDF</a>`);
-  return links.join("") || "<span>暂无链接</span>";
+  if (paper.pdfUrl) {
+    return `<a href="${escapeAttribute(paper.pdfUrl)}" target="_blank" rel="noreferrer">PDF下载</a>`;
+  }
+  return "<span>暂无 PDF</span>";
 }
 
 function scorePaper(paper) {
