@@ -1,0 +1,47 @@
+[
+  {
+    "pdf_path": "runs/artificial-intelligence/pdfs/1301.2158v1.pdf",
+    "text_path": "runs/artificial-intelligence/text/1301.2158v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 32,
+    "characters": 58866,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/artificial-intelligence/pdfs/2204.10358v1.pdf",
+    "text_path": "runs/artificial-intelligence/text/2204.10358v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 53,
+    "characters": 165238,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/artificial-intelligence/pdfs/2304.04780v1.pdf",
+    "text_path": "runs/artificial-intelligence/text/2304.04780v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 15,
+    "characters": 98192,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/artificial-intelligence/pdfs/2304.13269v4.pdf",
+    "text_path": "runs/artificial-intelligence/text/2304.13269v4.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 20,
+    "characters": 122135,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/artificial-intelligence/pdfs/2410.11896v1.pdf",
+    "text_path": "runs/artificial-intelligence/text/2410.11896v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 20,
+    "characters": 47134,
+    "error": ""
+  }
+]

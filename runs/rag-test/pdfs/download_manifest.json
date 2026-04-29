@@ -1,0 +1,26 @@
+[
+  {
+    "arxiv_id": "2411.18583v1",
+    "title": "Automated Literature Review Using NLP Techniques and LLM-Based Retrieval-Augmented Generation",
+    "pdf_url": "https://arxiv.org/pdf/2411.18583v1",
+    "pdf_path": "runs/rag-test/pdfs/2411.18583v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2502.00306v2",
+    "title": "Riddle Me This! Stealthy Membership Inference for Retrieval-Augmented Generation",
+    "pdf_url": "https://arxiv.org/pdf/2502.00306v2",
+    "pdf_path": "runs/rag-test/pdfs/2502.00306v2.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2510.22344v1",
+    "title": "FAIR-RAG: Faithful Adaptive Iterative Refinement for Retrieval-Augmented Generation",
+    "pdf_url": "https://arxiv.org/pdf/2510.22344v1",
+    "pdf_path": "runs/rag-test/pdfs/2510.22344v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  }
+]

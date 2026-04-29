@@ -1,0 +1,29 @@
+[
+  {
+    "pdf_path": "runs/rag-test/pdfs/2411.18583v1.pdf",
+    "text_path": "runs/rag-test/text/2411.18583v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 6,
+    "characters": 26005,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/rag-test/pdfs/2502.00306v2.pdf",
+    "text_path": "runs/rag-test/text/2502.00306v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 27,
+    "characters": 112088,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/rag-test/pdfs/2510.22344v1.pdf",
+    "text_path": "runs/rag-test/text/2510.22344v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 30,
+    "characters": 123406,
+    "error": ""
+  }
+]

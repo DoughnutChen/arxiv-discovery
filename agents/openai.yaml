@@ -1,0 +1,4 @@
+interface:
+  display_name: "ArXiv Discovery"
+  short_description: "Discover and summarize arXiv papers for literature review"
+  default_prompt: "Use $arxiv-discovery to search arXiv for recent papers on retrieval-augmented generation and summarize the top 5."

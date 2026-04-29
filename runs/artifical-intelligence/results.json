@@ -1,0 +1,111 @@
+{
+  "query": "artifical intelligence",
+  "category": null,
+  "sort_by": "relevance",
+  "sort_order": "descending",
+  "requested_results": 5,
+  "returned_results": 5,
+  "papers": [
+    {
+      "arxiv_id": "2105.06564v2",
+      "title": "Physical Artificial Intelligence: The Concept Expansion of Next-Generation Artificial Intelligence",
+      "summary": "Artificial Intelligence has been a growth catalyst to our society and is cosidered across all idustries as a fundamental technology. However, its development has been limited to the signal processing domain that relies on the generated and collected data from other sensors. In recent research, concepts of Digital Artificial Intelligence and Physicial Artifical Intelligence have emerged and this can be considered a big step in the theoretical development of Artifical Intelligence. In this paper we explore the concept of Physicial Artifical Intelligence and propose two subdomains: Integrated Physicial Artifical Intelligence and Distributed Physicial Artifical Intelligence. The paper will also examine the trend and governance of Physicial Artifical Intelligence.",
+      "authors": [
+        "Yingbo Li",
+        "Yucong Duan",
+        "Anamaria-Beatrice Spulber",
+        "Haoyang Che",
+        "Zakaria Maamar",
+        "Zhao Li",
+        "Chen Yang",
+        "Yu lei"
+      ],
+      "published": "2021-05-13T21:46:46Z",
+      "updated": "2021-05-17T00:38:03Z",
+      "abstract_url": "http://arxiv.org/abs/2105.06564v2",
+      "pdf_url": "https://arxiv.org/pdf/2105.06564v2",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ]
+    },
+    {
+      "arxiv_id": "2408.03345v1",
+      "title": "Artifical intelligence and inherent mathematical difficulty",
+      "summary": "This paper explores the relationship of artificial intelligence to the task of resolving open questions in mathematics. We first present an updated version of a traditional argument that limitative results from computability and complexity theory show that proof discovery is an inherently difficult problem. We then illustrate how several recent applications of artificial intelligence-inspired methods -- respectively involving automated theorem proving, SAT-solvers, and large language models -- do indeed raise novel questions about the nature of mathematical proof. We also argue that the results obtained by such techniques do not tell against our basic argument. This is so because they are embodiments of brute force search and are thus capable of deciding only statements of low logical complexity.",
+      "authors": [
+        "Walter Dean",
+        "Alberto Naibo"
+      ],
+      "published": "2024-08-01T20:08:31Z",
+      "updated": "2024-08-01T20:08:31Z",
+      "abstract_url": "http://arxiv.org/abs/2408.03345v1",
+      "pdf_url": "https://arxiv.org/pdf/2408.03345v1",
+      "primary_category": "math.HO",
+      "categories": [
+        "math.HO",
+        "cs.AI",
+        "cs.CC",
+        "math.LO"
+      ]
+    },
+    {
+      "arxiv_id": "2408.08318v1",
+      "title": "First Analysis of the EU Artifical Intelligence Act: Towards a Global Standard for Trustworthy AI?",
+      "summary": "The EU Artificial Intelligence Act (AI Act) came into force in the European Union (EU) on 1 August 2024. It is a key piece of legislation both for the citizens at the heart of AI technologies and for the industry active in the internal market. The AI Act imposes progressive compliance on organisations - both private and public - involved in the global value chain of AI systems and models marketed and used in the EU. While the Act is unprecedented on an international scale in terms of its horizontal and binding regulatory scope, its global appeal in support of trustworthy AI is one of its major challenges.",
+      "authors": [
+        "Marion Ho-Dac"
+      ],
+      "published": "2024-07-31T12:16:03Z",
+      "updated": "2024-07-31T12:16:03Z",
+      "abstract_url": "http://arxiv.org/abs/2408.08318v1",
+      "pdf_url": "https://arxiv.org/pdf/2408.08318v1",
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY",
+        "cs.AI"
+      ]
+    },
+    {
+      "arxiv_id": "1610.07432v1",
+      "title": "Virtual Embodiment: A Scalable Long-Term Strategy for Artificial Intelligence Research",
+      "summary": "Meaning has been called the \"holy grail\" of a variety of scientific disciplines, ranging from linguistics to philosophy, psychology and the neurosciences. The field of Artifical Intelligence (AI) is very much a part of that list: the development of sophisticated natural language semantics is a sine qua non for achieving a level of intelligence comparable to humans. Embodiment theories in cognitive science hold that human semantic representation depends on sensori-motor experience; the abundant evidence that human meaning representation is grounded in the perception of physical reality leads to the conclusion that meaning must depend on a fusion of multiple (perceptual) modalities. Despite this, AI research in general, and its subdisciplines such as computational linguistics and computer vision in particular, have focused primarily on tasks that involve a single modality. Here, we propose virtual embodiment as an alternative, long-term strategy for AI research that is multi-modal in nature and that allows for the kind of scalability required to develop the field coherently and incrementally, in an ethically responsible fashion.",
+      "authors": [
+        "Douwe Kiela",
+        "Luana Bulat",
+        "Anita L. Vero",
+        "Stephen Clark"
+      ],
+      "published": "2016-10-24T14:37:27Z",
+      "updated": "2016-10-24T14:37:27Z",
+      "abstract_url": "http://arxiv.org/abs/1610.07432v1",
+      "pdf_url": "https://arxiv.org/pdf/1610.07432v1",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ]
+    },
+    {
+      "arxiv_id": "2112.01242v1",
+      "title": "An AI-based Learning Companion Promoting Lifelong Learning Opportunities for All",
+      "summary": "Artifical Intelligence (AI) in Education has great potential for building more personalised curricula, as well as democratising education worldwide and creating a Renaissance of new ways of teaching and learning. We believe this is a crucial moment for setting the foundations of AI in education in the beginning of this Fourth Industrial Revolution. This report aims to synthesize how AI might change (and is already changing) how we learn, as well as what technological features are crucial for these AI systems in education, with the end goal of starting this pressing dialogue of how the future of AI in education should unfold, engaging policy makers, engineers, researchers and obviously, teachers and learners. This report also presents the advances within the X5GON project, a European H2020 project aimed at building and deploying a cross-modal, cross-lingual, cross-cultural, cross-domain and cross-site personalised learning platform for Open Educational Resources (OER).",
+      "authors": [
+        "Maria Perez-Ortiz",
+        "Erik Novak",
+        "Sahan Bulathwela",
+        "John Shawe-Taylor"
+      ],
+      "published": "2021-11-16T16:01:01Z",
+      "updated": "2021-11-16T16:01:01Z",
+      "abstract_url": "http://arxiv.org/abs/2112.01242v1",
+      "pdf_url": "https://arxiv.org/pdf/2112.01242v1",
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY",
+        "cs.AI"
+      ]
+    }
+  ]
+}
