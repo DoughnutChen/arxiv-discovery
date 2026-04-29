@@ -4,6 +4,11 @@
   "sort_by": "relevance",
   "sort_order": "descending",
   "requested_results": 5,
+  "date_from": null,
+  "date_to": null,
+  "keywords": [
+    "artificial intelligence"
+  ],
   "returned_results": 5,
   "papers": [
     {

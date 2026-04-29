@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -18,6 +19,8 @@ KIMI_BASE_URL = "https://api.moonshot.cn/v1"
 DEFAULT_OPENAI_MODEL = "gpt-4.1-mini"
 DEFAULT_KIMI_MODEL = "moonshot-v1-32k"
 MAX_TEXT_CHARS_PER_PAPER = 12000
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_STYLE_REFERENCE = SCRIPT_DIR.parent / "references" / "summary_schema.md"
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -55,7 +58,11 @@ def compact_paper(paper: dict[str, Any], text_dir: Path | None) -> dict[str, Any
     }
 
 
-def build_prompt(payload: dict[str, Any], text_dir: Path | None) -> str:
+def read_style_reference(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+def build_prompt(payload: dict[str, Any], text_dir: Path | None, style_reference: str) -> str:
     papers = [compact_paper(paper, text_dir) for paper in payload.get("papers", [])]
     compact_payload = {
         "query": payload.get("query", ""),
@@ -68,26 +75,18 @@ def build_prompt(payload: dict[str, Any], text_dir: Path | None) -> str:
     return f"""
 你是面向研究生和博士文献调研的论文速读助手。请根据下面的 arXiv 搜索结果、摘要和论文正文节选，生成 Markdown 格式中文速读报告。
 
-必须严格遵守以下格式和风格：
-1. 论文题目保留英文原文。
-2. 先输出“## 整体摘要”，长度约 100 个中文字符，概括这批论文共同关注的问题、主要方法取向和研究价值。
-3. 再输出对比表格，列包括：优先级、Title、arXiv ID、日期、作者、相关性。
-4. 每篇论文使用如下结构：
-   ## 1. English Paper Title
-   - arXiv ID：`...`
-   - 链接：[Abstract](...)，[PDF](...)
-   - 作者：...
-   - 发布/更新：...
+必须严格遵守下面参考文件中的格式、长度和语言风格要求：
 
-   ### 摘要
+```markdown
+{style_reference}
+```
 
-   200-300 个中文字符。写清楚研究问题、方法、主要结论，以及与搜索关键词的相关性。语言风格接近研究生文献笔记，不要拆成项目符号。
-
-   ### 推荐原因
-
-   1-2 句中文，说明这篇论文为什么值得在当前主题下阅读。
-5. 结尾输出“## 阅读顺序”，用 3-5 条中文说明推荐阅读顺序。
-6. 不要编造输入中没有的实验结果、理论贡献或结论。如果正文不可用，应说明摘要主要基于 arXiv 摘要。
+额外要求：
+1. 不要编造输入中没有的实验结果、理论贡献或结论。
+2. 如果正文不可用，应说明摘要主要基于 arXiv 摘要。
+3. 必须使用中文输出，论文题目保留英文原文。
+4. 必须为输入中的每一篇论文都输出一个编号条目，不要省略、合并或中途停止。
+5. 每篇论文的 `### 摘要` 中，`**研究问题**`、`**研究方法**`、`**研究结论**` 必须分别单独成行；研究结论的每个编号结论也必须单独成行。
 
 搜索与论文数据如下：
 
@@ -182,15 +181,33 @@ def default_model(provider: str) -> str:
     return DEFAULT_OPENAI_MODEL
 
 
+def validate_report_complete(report: str, payload: dict[str, Any]) -> None:
+    expected = len(payload.get("papers", []))
+    headings = list(re.finditer(r"^##\s+(\d+)\.", report, flags=re.MULTILINE))
+    found = len(headings)
+    if expected and found != expected:
+        raise RuntimeError(f"摘要报告不完整：预期 {expected} 篇论文，实际生成 {found} 篇。请重新生成或减少正文节选长度后重试。")
+    required_markers = ("### 摘要", "**研究问题**", "**研究方法**", "**研究结论**", "### 具体领域", "### 推荐原因")
+    for index, heading in enumerate(headings):
+        section_end = headings[index + 1].start() if index + 1 < len(headings) else len(report)
+        section = report[heading.start():section_end]
+        missing = [marker for marker in required_markers if marker not in section]
+        if missing:
+            paper_number = heading.group(1)
+            missing_text = "、".join(missing)
+            raise RuntimeError(f"摘要报告第 {paper_number} 篇不完整，缺少：{missing_text}。请重新生成或减少正文节选长度后重试。")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="根据 arXiv 搜索结果和正文生成中文论文速读报告。")
     parser.add_argument("results_json", type=Path, help="search_arxiv.py 生成的 results.json。")
     parser.add_argument("--text-dir", type=Path, help="extract_pdf_text.py 生成的正文目录。")
     parser.add_argument("--output", type=Path, default=Path("report.md"), help="输出 Markdown 报告路径。")
-    parser.add_argument("--provider", choices=("openai", "kimi"), default="openai", help="摘要生成服务，默认 openai。")
+    parser.add_argument("--provider", choices=("openai", "kimi"), default="kimi", help="摘要生成服务，默认 kimi。")
     parser.add_argument("--model", help="生成摘要使用的模型；未指定时按 provider 使用默认模型。")
     parser.add_argument("--base-url", help=f"Kimi API base URL，默认 {KIMI_BASE_URL}。")
     parser.add_argument("--prompt-output", type=Path, help="可选：保存发送给模型的提示词，便于开发调试。")
+    parser.add_argument("--style-reference", type=Path, default=DEFAULT_STYLE_REFERENCE, help="摘要格式和风格要求 Markdown 文件。")
     args = parser.parse_args()
 
     model = args.model or default_model(args.provider)
@@ -201,7 +218,8 @@ def main() -> int:
         return 2
 
     payload = read_json(args.results_json)
-    prompt = build_prompt(payload, args.text_dir)
+    style_reference = read_style_reference(args.style_reference)
+    prompt = build_prompt(payload, args.text_dir, style_reference)
     if args.prompt_output:
         args.prompt_output.parent.mkdir(parents=True, exist_ok=True)
         args.prompt_output.write_text(prompt, encoding="utf-8")
@@ -210,6 +228,7 @@ def main() -> int:
         report = call_kimi(prompt, model, api_key, args.base_url or KIMI_BASE_URL)
     else:
         report = call_openai(prompt, model, api_key)
+    validate_report_complete(report, payload)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")
     print(f"已生成摘要报告：{args.output}")

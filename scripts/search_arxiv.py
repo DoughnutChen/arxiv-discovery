@@ -6,8 +6,10 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import socket
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -24,11 +26,28 @@ def clean_text(value: str | None) -> str:
     return re.sub(r"\s+", " ", value or "").strip()
 
 
-def build_search_query(query: str, category: str | None) -> str:
-    terms = f'all:"{query}"' if " " in query.strip() else f"all:{query.strip()}"
+def arxiv_date(value: str, end_of_day: bool = False) -> str:
+    compact = value.replace("-", "")
+    return compact + ("2359" if end_of_day else "0000")
+
+
+def term_query(value: str) -> str:
+    value = value.strip()
+    if " " in value:
+        return f'all:"{value}"'
+    return f"all:{value}"
+
+
+def build_search_query(query: str, keywords: list[str], category: str | None, date_from: str | None, date_to: str | None) -> str:
+    query_terms = keywords or [query]
+    parts = [term_query(term) for term in query_terms if term.strip()]
     if category:
-        return f"cat:{category} AND {terms}"
-    return terms
+        parts.insert(0, f"cat:{category}")
+    if date_from or date_to:
+        start = arxiv_date(date_from or "1991-01-01")
+        end = arxiv_date(date_to or "2099-12-31", end_of_day=True)
+        parts.append(f"submittedDate:[{start} TO {end}]")
+    return " AND ".join(parts)
 
 
 def fetch_arxiv(
@@ -37,9 +56,14 @@ def fetch_arxiv(
     category: str | None,
     sort_by: str,
     sort_order: str,
+    date_from: str | None,
+    date_to: str | None,
+    retries: int,
+    timeout: float,
+    keywords: list[str],
 ) -> str:
     params = {
-        "search_query": build_search_query(query, category),
+        "search_query": build_search_query(query, keywords, category, date_from, date_to),
         "start": "0",
         "max_results": str(max_results),
         "sortBy": sort_by,
@@ -47,8 +71,33 @@ def fetch_arxiv(
     }
     url = f"{API_URL}?{urllib.parse.urlencode(params)}"
     request = urllib.request.Request(url, headers={"User-Agent": "arxiv-discovery/1.0"})
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8")
+    for attempt in range(retries + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                return response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429 and attempt < retries:
+                wait = 5 * (attempt + 1)
+                print(f"arXiv 请求过快，等待 {wait} 秒后重试。", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            detail = exc.read().decode("utf-8", errors="ignore")[:500]
+            raise RuntimeError(f"arXiv API 请求失败：HTTP {exc.code}。{detail}") from exc
+        except urllib.error.URLError as exc:
+            if attempt < retries:
+                wait = 5 * (attempt + 1)
+                print(f"arXiv 网络请求失败，等待 {wait} 秒后重试。", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            raise RuntimeError(f"arXiv API 网络请求失败：{exc}") from exc
+        except (socket.timeout, TimeoutError) as exc:
+            if attempt < retries:
+                wait = 5 * (attempt + 1)
+                print(f"arXiv 响应超时，等待 {wait} 秒后重试。", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            raise RuntimeError(f"arXiv API 响应超时：{exc}") from exc
+    raise RuntimeError("arXiv API 请求失败。")
 
 
 def parse_entry(entry: ET.Element) -> dict[str, Any]:
@@ -86,8 +135,11 @@ def parse_feed(xml_text: str) -> list[dict[str, Any]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="按关键词搜索 arXiv，并写入 results.json。")
     parser.add_argument("query", help="搜索关键词或短语。")
-    parser.add_argument("--max-results", type=int, default=5, help="请求结果数量，默认 5。")
+    parser.add_argument("--keyword", action="append", default=[], help="可重复传入的拆分关键词；提供后会用 AND 组合搜索。")
+    parser.add_argument("--max-results", type=int, default=6, help="请求结果数量，默认 6。")
     parser.add_argument("--category", help="可选 arXiv 分类，例如 cs.CL 或 stat.ML。")
+    parser.add_argument("--date-from", help="可选起始提交日期，格式 YYYY-MM-DD。")
+    parser.add_argument("--date-to", help="可选结束提交日期，格式 YYYY-MM-DD。")
     parser.add_argument(
         "--sort-by",
         choices=("relevance", "lastUpdatedDate", "submittedDate"),
@@ -96,12 +148,29 @@ def main() -> int:
     parser.add_argument("--sort-order", choices=("ascending", "descending"), default="descending")
     parser.add_argument("--output", type=Path, default=Path("results.json"), help="输出 JSON 路径。")
     parser.add_argument("--sleep", type=float, default=1.0, help="API 请求后的等待秒数。")
+    parser.add_argument("--retries", type=int, default=2, help="arXiv 请求失败后的重试次数，默认 2。")
+    parser.add_argument("--timeout", type=float, default=60.0, help="arXiv 单次请求超时时间，默认 60 秒。")
     args = parser.parse_args()
 
     if args.max_results < 1:
         parser.error("--max-results 必须至少为 1")
 
-    xml_text = fetch_arxiv(args.query, args.max_results, args.category, args.sort_by, args.sort_order)
+    try:
+        xml_text = fetch_arxiv(
+            args.query,
+            args.max_results,
+            args.category,
+            args.sort_by,
+            args.sort_order,
+            args.date_from,
+            args.date_to,
+            args.retries,
+            args.timeout,
+            args.keyword,
+        )
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
     time.sleep(max(args.sleep, 0))
     papers = parse_feed(xml_text)
     payload = {
@@ -110,6 +179,9 @@ def main() -> int:
         "sort_by": args.sort_by,
         "sort_order": args.sort_order,
         "requested_results": args.max_results,
+        "date_from": args.date_from,
+        "date_to": args.date_to,
+        "keywords": args.keyword or [args.query],
         "returned_results": len(papers),
         "papers": papers,
     }

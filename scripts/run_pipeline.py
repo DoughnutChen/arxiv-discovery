@@ -42,11 +42,19 @@ def ask_api_key(provider: str, key_name: str) -> str:
     return api_key
 
 
+def parse_request(request: str, output_path: Path) -> dict[str, object]:
+    command = [sys.executable, str(SCRIPT_DIR / "parse_request.py"), request, "--output", str(output_path)]
+    run(command)
+    return json.loads(output_path.read_text(encoding="utf-8"))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="搜索 arXiv、下载 PDF、提取正文并生成中文论文速读报告。")
     parser.add_argument("query", nargs="?", help="搜索关键词或短语；如果省略，将在终端中询问。")
-    parser.add_argument("--max-results", type=int, default=5, help="处理论文数量，默认 5。")
+    parser.add_argument("--max-results", type=int, help="处理论文数量；未指定时从自然语言需求中解析，默认 6。")
     parser.add_argument("--category", help="可选 arXiv 分类，例如 cs.CL 或 stat.ML。")
+    parser.add_argument("--date-from", help="可选起始提交日期，格式 YYYY-MM-DD；优先级高于自然语言解析结果。")
+    parser.add_argument("--date-to", help="可选结束提交日期，格式 YYYY-MM-DD；优先级高于自然语言解析结果。")
     parser.add_argument(
         "--sort-by",
         choices=("relevance", "lastUpdatedDate", "submittedDate"),
@@ -60,38 +68,56 @@ def main() -> int:
         help="排序方向，默认 descending。",
     )
     parser.add_argument("--output-dir", type=Path, help="输出目录，默认 runs/<query-slug>。")
-    parser.add_argument("--provider", choices=("openai", "kimi"), default="openai", help="摘要生成服务，默认 openai。")
+    parser.add_argument("--provider", choices=("openai", "kimi"), default="kimi", help="摘要生成服务，默认 kimi。")
     parser.add_argument("--model", help="生成摘要使用的模型；未指定时按 provider 使用默认模型。")
     parser.add_argument("--base-url", help="Kimi API base URL；通常不需要修改。")
     parser.add_argument("--skip-download", action="store_true", help="只搜索 arXiv，不下载 PDF。")
     parser.add_argument("--skip-extract", action="store_true", help="搜索和下载 PDF，但不提取正文。")
     parser.add_argument("--skip-summary", action="store_true", help="不生成中文摘要报告。")
+    parser.add_argument("--skip-html", action="store_true", help="不导出最终 HTML 页面。")
     parser.add_argument("--save-prompt", action="store_true", help="保存发送给模型的提示词，便于开发调试。")
     args = parser.parse_args()
 
-    if args.max_results < 1:
+    if args.max_results is not None and args.max_results < 1:
         parser.error("--max-results 必须至少为 1")
 
     try:
-        query = args.query.strip() if args.query else ask_query()
+        request_text = args.query.strip() if args.query else ask_query()
     except ValueError as exc:
         parser.error(str(exc))
 
-    output_dir = args.output_dir or Path("runs") / slugify(query)
+    provisional_slug = slugify(request_text)
+    output_dir = args.output_dir or Path("runs") / provisional_slug
     output_dir.mkdir(parents=True, exist_ok=True)
+    request_json = output_dir / "request.json"
     results_json = output_dir / "results.json"
     pdf_dir = output_dir / "pdfs"
     text_dir = output_dir / "text"
     report_md = output_dir / "report.md"
+    html_path = output_dir / "index.html"
     prompt_md = output_dir / "summary_prompt.md"
     report_generated = False
+    html_generated = False
+
+    parsed = parse_request(request_text, request_json)
+    query = str(parsed.get("search_query") or request_text)
+    keywords = [str(item) for item in parsed.get("keywords", []) if str(item).strip()]
+    max_results = args.max_results or int(parsed.get("max_results") or 6)
+    date_from = args.date_from or parsed.get("date_from")
+    date_to = args.date_to or parsed.get("date_to")
+    print(f"解析后的搜索关键词：{query}")
+    if keywords:
+        print(f"拆分关键词：{', '.join(keywords)}")
+    print(f"解析后的论文篇数：{max_results}")
+    if date_from or date_to:
+        print(f"解析后的时间范围：{date_from or '不限'} 到 {date_to or '不限'}")
 
     search_command = [
         sys.executable,
         str(SCRIPT_DIR / "search_arxiv.py"),
         query,
         "--max-results",
-        str(args.max_results),
+        str(max_results),
         "--sort-by",
         args.sort_by,
         "--sort-order",
@@ -101,6 +127,12 @@ def main() -> int:
     ]
     if args.category:
         search_command.extend(["--category", args.category])
+    for keyword in keywords:
+        search_command.extend(["--keyword", keyword])
+    if date_from:
+        search_command.extend(["--date-from", str(date_from)])
+    if date_to:
+        search_command.extend(["--date-to", str(date_to)])
     run(search_command)
 
     returned = 0
@@ -156,6 +188,21 @@ def main() -> int:
         else:
             print("未获得可用 API key，已跳过自动摘要生成。")
 
+    if not args.skip_html:
+        export_command = [
+            sys.executable,
+            str(SCRIPT_DIR / "export_html.py"),
+            str(results_json),
+            "--output",
+            str(html_path),
+        ]
+        if report_md.exists():
+            export_command.extend(["--report", str(report_md)])
+        run(export_command)
+        html_generated = html_path.exists()
+    else:
+        print("已按参数跳过 HTML 页面导出。")
+
     print("流水线完成。")
     print(f"搜索结果：{results_json}")
     print(f"PDF 目录：{pdf_dir}")
@@ -164,6 +211,10 @@ def main() -> int:
         print(f"摘要报告：{report_md}")
     else:
         print("摘要报告：未生成")
+    if html_generated:
+        print(f"HTML 页面：{html_path}")
+    else:
+        print("HTML 页面：未生成")
     return 0
 
 

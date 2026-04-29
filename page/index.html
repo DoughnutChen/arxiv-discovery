@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ArXiv Discovery 论文雷达</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#hero" aria-label="回到顶部">
+        <span class="brand-mark">AD</span>
+        <span>ArXiv Discovery</span>
+      </a>
+      <nav class="nav">
+        <a href="#summary">整体摘要</a>
+        <a href="#papers">论文卡片</a>
+        <a href="#archive">归档表</a>
+      </nav>
+      <label class="search-box">
+        <span>搜索</span>
+        <input id="keywordInput" type="search" placeholder="标题 / 作者 / 摘要" />
+      </label>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Academic Radar Poster</p>
+          <h1>论文速读雷达</h1>
+          <p id="heroText" class="hero-text">
+            导入 `results.json` 与 `report.md`，把 arXiv 检索结果和中文速读报告渲染为可浏览、可检索、可打印的学术海报。
+          </p>
+          <div class="import-panel" aria-label="导入文件">
+            <label>
+              <span>arXiv 元数据</span>
+              <input id="resultsFile" type="file" accept=".json,application/json" />
+            </label>
+            <label>
+              <span>摘要报告</span>
+              <input id="reportFile" type="file" accept=".md,.txt,text/markdown,text/plain" />
+            </label>
+          </div>
+        </div>
+        <div class="hero-dashboard" aria-label="报告概览">
+          <div class="metric">
+            <span id="paperCount">0</span>
+            <strong>论文数量</strong>
+          </div>
+          <div class="metric">
+            <span id="sortValue">未导入</span>
+            <strong>排序方式</strong>
+          </div>
+          <div class="query-card">
+            <span>当前关键词</span>
+            <strong id="queryValue">等待导入</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="summary" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Overview</p>
+          <h2>整体摘要</h2>
+        </div>
+        <article id="overallSummary" class="summary-block">
+          请先导入流水线生成的 `results.json` 和 `report.md`。如果只有 `results.json`，页面仍会展示论文元数据，但不会显示中文摘要。
+        </article>
+      </section>
+
+      <section id="papers" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Paper Radar</p>
+          <h2>论文卡片</h2>
+        </div>
+        <div id="paperGrid" class="paper-grid empty">
+          <p>尚未导入论文数据。</p>
+        </div>
+      </section>
+
+      <section id="archive" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Archive</p>
+          <h2>论文归档</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>Title</th>
+                <th>arXiv ID</th>
+                <th>日期</th>
+                <th>相关性</th>
+              </tr>
+            </thead>
+            <tbody id="archiveBody">
+              <tr>
+                <td colspan="5">尚未导入论文数据。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="paperTemplate">
+      <article class="paper-card">
+        <div class="paper-card-head">
+          <div>
+            <p class="paper-index"></p>
+            <h3></h3>
+          </div>
+          <div class="radar-slot"></div>
+        </div>
+        <dl class="meta-list"></dl>
+        <div class="link-row"></div>
+        <div class="paper-body">
+          <h4>摘要</h4>
+          <p class="paper-summary"></p>
+          <h4>推荐原因</h4>
+          <p class="paper-reason"></p>
+        </div>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

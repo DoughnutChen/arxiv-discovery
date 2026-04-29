@@ -1,0 +1,92 @@
+[
+  {
+    "pdf_path": "runs/llm/pdfs/2306.05212v1.pdf",
+    "text_path": "runs/llm/text/2306.05212v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 5,
+    "characters": 20382,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2306.08568v2.pdf",
+    "text_path": "runs/llm/text/2306.08568v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 18,
+    "characters": 63965,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2310.00034v2.pdf",
+    "text_path": "runs/llm/text/2310.00034v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 13,
+    "characters": 51482,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2312.10793v3.pdf",
+    "text_path": "runs/llm/text/2312.10793v3.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 8,
+    "characters": 31814,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2402.11651v2.pdf",
+    "text_path": "runs/llm/text/2402.11651v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 13,
+    "characters": 51182,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2405.19266v4.pdf",
+    "text_path": "runs/llm/text/2405.19266v4.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 31,
+    "characters": 124639,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2406.01698v3.pdf",
+    "text_path": "runs/llm/text/2406.01698v3.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 19,
+    "characters": 108612,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2407.07093v1.pdf",
+    "text_path": "runs/llm/text/2407.07093v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 14,
+    "characters": 50263,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2408.13006v2.pdf",
+    "text_path": "runs/llm/text/2408.13006v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 25,
+    "characters": 75191,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/llm/pdfs/2601.17768v2.pdf",
+    "text_path": "runs/llm/text/2601.17768v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 15,
+    "characters": 69872,
+    "error": ""
+  }
+]

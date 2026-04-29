@@ -4,7 +4,7 @@
     "title": "A Review on Explainable Artificial Intelligence for Healthcare: Why, How, and When?",
     "pdf_url": "https://arxiv.org/pdf/2304.04780v1",
     "pdf_path": "runs/artificial-intelligence/pdfs/2304.04780v1.pdf",
-    "status": "downloaded",
+    "status": "exists",
     "error": ""
   },
   {
@@ -12,7 +12,7 @@
     "title": "Creative Problem Solving in Artificially Intelligent Agents: A Survey and Framework",
     "pdf_url": "https://arxiv.org/pdf/2204.10358v1",
     "pdf_path": "runs/artificial-intelligence/pdfs/2204.10358v1.pdf",
-    "status": "downloaded",
+    "status": "exists",
     "error": ""
   },
   {
@@ -20,7 +20,7 @@
     "title": "Artificial Intelligence Framework for Simulating Clinical Decision-Making: A Markov Decision Process Approach",
     "pdf_url": "https://arxiv.org/pdf/1301.2158v1",
     "pdf_path": "runs/artificial-intelligence/pdfs/1301.2158v1.pdf",
-    "status": "downloaded",
+    "status": "exists",
     "error": ""
   },
   {
@@ -28,7 +28,7 @@
     "title": "Study on the Helpfulness of Explainable Artificial Intelligence",
     "pdf_url": "https://arxiv.org/pdf/2410.11896v1",
     "pdf_path": "runs/artificial-intelligence/pdfs/2410.11896v1.pdf",
-    "status": "downloaded",
+    "status": "exists",
     "error": ""
   },
   {
@@ -36,7 +36,7 @@
     "title": "Games for Artificial Intelligence Research: A Review and Perspectives",
     "pdf_url": "https://arxiv.org/pdf/2304.13269v4",
     "pdf_path": "runs/artificial-intelligence/pdfs/2304.13269v4.pdf",
-    "status": "downloaded",
+    "status": "exists",
     "error": ""
   }
 ]

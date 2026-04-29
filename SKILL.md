@@ -10,26 +10,28 @@ description: 按关键词搜索 arXiv、批量下载论文 PDF、解析论文正
 使用本 skill 帮助研究生和博士研究者从一个关键词快速得到一组适合文献调研的论文：搜索 arXiv、下载 PDF、提取论文正文，并调用 OpenAI 或 Kimi API 输出结构化中文摘要报告。
 
 默认行为：
-- 默认处理 5 篇论文，除非用户明确指定其他数量。
+- 默认处理 6 篇论文，除非用户明确指定其他数量。
 - 如果可用结果不足，则处理 3 篇或全部可用论文。
 - 论文题目保留英文原文。
 - 每篇论文摘要使用中文撰写，长度控制在 200-300 个中文字符。
-- 每篇论文必须按“摘要”和“推荐原因”两部分输出，语言应接近研究生文献笔记风格，避免项目符号堆叠。
+- 每篇论文必须按“摘要”和“推荐原因”两部分输出；“摘要”内的“研究问题”“研究方法”“研究结论”需加粗并各自另起一行，研究结论的每个编号点也需单独成行。
 - 全部单篇摘要之外，额外生成一段约 100 个中文字符的整体摘要，概括本批论文的共同主题、主要方法或研究价值。
-- 如果运行流水线时没有提供关键词，脚本必须在终端主动询问用户的 arXiv 搜索关键词。
+- 如果运行流水线时没有提供需求，脚本必须在终端主动询问用户的论文查找要求。
+- 用户需求可以是中文或英文，流水线会解析搜索关键词、论文篇数和时间范围。
 - 自动生成摘要需要 API key：OpenAI 使用 `OPENAI_API_KEY`，Kimi 使用 `KIMI_API_KEY`；如果环境变量不存在，`run_pipeline.py` 会像询问关键词一样交互询问 API key，输入不会回显。不要把 API key 写进代码、命令行参数或日志。
 
 ## 输入
 
 当用户提供以下信息时，应尽量识别并使用：
-- `query`：搜索关键词或短语，例如 `retrieval augmented generation`；如果命令行未提供，流水线会主动询问。
-- `max_results`：可选，处理论文数量；默认值为 `5`。
+- `query`：自然语言论文查找要求，例如 `帮我找近三年 8 篇 LLM 和 RAG 相关论文` 或 `find 8 recent papers about retrieval augmented generation in the last 3 years`；如果命令行未提供，流水线会主动询问。
+- `max_results`：可选，处理论文数量；如果未指定，优先从用户需求中解析，默认值为 `6`。
 - `category`：可选，arXiv 分类，例如 `cs.CL`、`cs.LG`、`stat.ML`。
 - `sort_by`：可选，排序方式，可取 `relevance`、`submittedDate` 或 `lastUpdatedDate`；默认值为 `relevance`。
 - `sort_order`：可选，排序顺序，可取 `descending` 或 `ascending`；默认值为 `descending`。
 - `date_range`：可选，自然语言时间范围；如果无法直接通过 arXiv API 表达，则在最终筛选时应用。
+- `date_from` / `date_to`：可选，显式 arXiv 提交日期范围，格式 `YYYY-MM-DD`；优先级高于自然语言解析结果。
 - `output_dir`：可选，用于保存 PDF、正文文本和 JSON 元数据的目录。
-- `provider`：可选，摘要生成服务，可取 `openai` 或 `kimi`；默认值为 `openai`。
+- `provider`：可选，摘要生成服务，可取 `kimi` 或 `openai`；默认值为 `kimi`。
 - `model`：可选，生成摘要使用的模型；OpenAI 默认 `gpt-4.1-mini`，Kimi 默认 `moonshot-v1-32k`。
 - `base_url`：可选，Kimi API base URL；默认值为 `https://api.moonshot.cn/v1`。
 
@@ -46,7 +48,7 @@ description: 按关键词搜索 arXiv、批量下载论文 PDF、解析论文正
 每篇论文至少包含：
 - 英文论文题目。
 - arXiv ID，以及摘要页和 PDF 链接。
-- “摘要”：200-300 个中文字符，写清楚研究问题、方法、主要结论，以及与搜索关键词的相关性。
+- “摘要”：200-300 个中文字符，写清楚研究问题、方法、主要结论，以及与搜索关键词的相关性；“研究问题”“研究方法”“研究结论”需作为加粗小标题单独成行，研究结论每个点单独成行。
 - “推荐原因”：1-2 句中文，说明这篇论文为什么值得研究生或博士在当前主题下阅读。
 
 最终报告的具体结构参考 `references/summary_schema.md`。
@@ -54,67 +56,90 @@ description: 按关键词搜索 arXiv、批量下载论文 PDF、解析论文正
 ## 工作流程
 
 1. 只有当用户关键词含义过于模糊、会明显影响搜索方向时，才先追问必要信息。
-2. 标准流程优先使用 `scripts/run_pipeline.py`，完成搜索、下载、正文提取和摘要生成。
-3. `run_pipeline.py` 会调用 `scripts/generate_summary.py`，读取 `results.json` 和 `text/` 目录，生成 `report.md`。
-4. 如果未设置当前 provider 对应的 API key，`run_pipeline.py` 应交互询问 API key；如果用户未输入，则跳过自动摘要生成。
-5. 摘要报告必须先写整体摘要，再写每篇论文的“摘要”和“推荐原因”。
-6. 明确说明被跳过的 PDF、解析失败的论文，以及与关键词相关性较弱的结果。
+2. 标准流程优先使用 `scripts/run_pipeline.py`，完成需求解析、搜索、下载、正文提取、摘要生成和 HTML 导出。
+3. `run_pipeline.py` 会先调用 `scripts/parse_request.py`，把中英文自然语言需求解析成关键词、篇数和时间范围，并写入 `request.json`。多个关键词会在 arXiv 查询中用 AND 组合搜索。
+4. `run_pipeline.py` 会调用 `scripts/generate_summary.py`，读取 `results.json` 和 `text/` 目录，生成 `report.md`。摘要格式和风格要求必须来自 `references/summary_schema.md`。
+5. 如果未设置当前 provider 对应的 API key，`run_pipeline.py` 应交互询问 API key；如果用户未输入，则跳过自动摘要生成。
+6. `run_pipeline.py` 最后调用 `scripts/export_html.py`，生成可直接打开的 `index.html`。
+7. 摘要报告必须先写整体摘要，再写每篇论文的“摘要”和“推荐原因”。
+8. 明确说明被跳过的 PDF、解析失败的论文，以及与关键词相关性较弱的结果。
 
 ## 运行流水线
 
 在本 skill 目录中运行：
 
 ```bash
-python3 scripts/run_pipeline.py "retrieval augmented generation" --max-results 5 --category cs.CL --output-dir ./runs/rag
+python3 scripts/run_pipeline.py "帮我找近三年 6 篇 retrieval augmented generation 相关论文" --category cs.CL --provider kimi --model moonshot-v1-32k --output-dir ./runs/rag
 ```
 
 如果省略关键词，脚本会主动询问：
 
 ```bash
-python3 scripts/run_pipeline.py --max-results 5 --category cs.CL --output-dir ./runs/rag
+python3 scripts/run_pipeline.py --category cs.CL --provider kimi --model moonshot-v1-32k --output-dir ./runs/rag
 ```
 
-自动生成摘要前，推荐通过环境变量提供对应的 API key。OpenAI 示例：
-
-```bash
-export OPENAI_API_KEY="你的 API key"
-```
-
-Kimi 示例：
+自动生成摘要默认使用 Kimi。推荐通过环境变量提供对应的 API key。Kimi 示例：
 
 ```bash
 export KIMI_API_KEY="你的 Kimi API key"
-python3 scripts/run_pipeline.py "retrieval augmented generation" --max-results 5 --category cs.CL --provider kimi --model moonshot-v1-32k --output-dir ./runs/rag
+```
+
+OpenAI 需要显式指定 `--provider openai`。示例：
+
+```bash
+export OPENAI_API_KEY="你的 OpenAI API key"
+python3 scripts/run_pipeline.py "retrieval augmented generation" --max-results 6 --category cs.CL --provider openai --model gpt-4.1-mini --output-dir ./runs/rag
 ```
 
 如果没有设置环境变量，`run_pipeline.py` 会在需要生成摘要时询问 API key，输入内容不会显示，也不会保存到文件。
 
 完整流水线会生成：
+- `request.json`：从用户自然语言需求中解析出的关键词、篇数和时间范围。
 - `results.json`：arXiv 搜索结果和论文元数据。
 - `pdfs/`：下载的论文 PDF。
 - `text/`：提取出的论文正文。
 - `report.md`：最终中文论文速读报告。
+- `index.html`：最终 HTML 论文雷达页面，打开即可查看结果。
+
+## HTML 论文雷达页面
+
+本 skill 附带一个静态 HTML 页面：
+
+```text
+page/index.html
+```
+
+该页面可直接用浏览器打开，不需要构建工具或本地服务。流水线会在每个运行目录下生成内嵌当前结果的 `index.html`，这是最终结果页，打开后不需要再手动导入 JSON 或 Markdown。`page/index.html` 仅作为开发预览模板保留。页面包含：
+- Hero 概览区：关键词、论文数量、分类和排序方式。
+- 整体摘要区：展示 `report.md` 中的“整体摘要”。
+- 论文卡片区：展示英文题目、作者、日期、arXiv 链接、PDF 链接、中文摘要和推荐原因。
+- SVG 雷达图：根据本地元数据和摘要长度生成相关性、摘要完整度、元数据完整度、时效性和推荐理由完整度评分。
+- 归档表：按导入顺序展示论文列表。
+- 顶部导航和关键词搜索。
+
+页面不发起外部网络请求，不处理 API key，也不包含遥测逻辑。对于流水线导出的 `runs/<query>/index.html`，数据已内嵌在 HTML 中；用户只需要打开最终 HTML 文件即可查看结果。
 
 也可以分步骤运行：
 
 ```bash
-python3 scripts/search_arxiv.py "diffusion models" --max-results 5 --sort-by submittedDate --output ./runs/diffusion/results.json
+python3 scripts/search_arxiv.py "diffusion models" --max-results 6 --sort-by submittedDate --output ./runs/diffusion/results.json
 python3 scripts/download_pdfs.py ./runs/diffusion/results.json --output-dir ./runs/diffusion/pdfs
 python3 scripts/extract_pdf_text.py ./runs/diffusion/pdfs --output-dir ./runs/diffusion/text
 python3 scripts/generate_summary.py ./runs/diffusion/results.json --text-dir ./runs/diffusion/text --output ./runs/diffusion/report.md
 python3 scripts/generate_summary.py ./runs/diffusion/results.json --text-dir ./runs/diffusion/text --provider kimi --model moonshot-v1-32k --output ./runs/diffusion/report.md
+python3 scripts/export_html.py ./runs/diffusion/results.json --report ./runs/diffusion/report.md --output ./runs/diffusion/index.html
 ```
 
 脚本只使用 arXiv 官方公开接口进行网络访问：
 - `https://export.arxiv.org/api/query`
 - `https://arxiv.org/pdf/<arxiv_id>.pdf`
 
-PDF 正文解析会按顺序尝试本地已安装的解析库：先尝试 `PyMuPDF`（`fitz`），再尝试 `pypdf`。如果两者都不存在，应提示用户安装其中一个库，或请用户提供已提取的正文文本。摘要生成支持 OpenAI Responses API 和 Kimi chat completions 兼容接口，API key 可来自环境变量或 `run_pipeline.py` 的交互输入。
+PDF 正文解析会按顺序尝试本地已安装的解析库：先尝试 `PyMuPDF`（`fitz`），再尝试 `pypdf`。如果两者都不存在，应提示用户安装其中一个库，或请用户提供已提取的正文文本。摘要生成支持 OpenAI Responses API 和 Kimi chat completions 兼容接口，API key 可来自环境变量或 `run_pipeline.py` 的交互输入。arXiv 搜索会对 429、网络错误和响应超时做有限重试，并输出中文错误信息。
 
 ## 触发词
 
 以下请求应触发本 skill：
-- `论文速读：帮我搜 arXiv 上 RAG 的最新论文并总结 5 篇`
+- `论文速读：帮我搜 arXiv 上 RAG 的最新论文并总结 6 篇`
 - `用 arxiv-discovery 搜 efficient LLM inference`
 - `按关键词帮我做博士文献调研`
 - `批量下载并总结 arXiv paper`
@@ -125,13 +150,13 @@ PDF 正文解析会按顺序尝试本地已安装的解析库：先尝试 `PyMuP
 用户请求：
 
 ```text
-用 arxiv-discovery 搜索 multi-agent reinforcement learning，默认 5 篇，输出中文摘要。
+用 arxiv-discovery 搜索 multi-agent reinforcement learning，默认 6 篇，输出中文摘要。
 ```
 
 应执行：
 
 ```bash
-python3 scripts/run_pipeline.py "multi-agent reinforcement learning" --max-results 5 --output-dir ./runs/marl
+python3 scripts/run_pipeline.py "multi-agent reinforcement learning" --max-results 6 --output-dir ./runs/marl
 ```
 
 流水线完成后，读取 `./runs/marl/report.md`，其中应包含整体摘要，并为每篇论文输出英文题目、中文“摘要”和“推荐原因”。
@@ -161,3 +186,4 @@ python3 scripts/run_pipeline.py "hallucination detection" --max-results 3 --cate
 
 - 修改搜索行为或查询语法前，阅读 `references/arxiv_api.md`。
 - 生成最终文献调研报告前，阅读 `references/summary_schema.md`。
+- 展示最终报告时，优先打开流水线生成的 `runs/<query>/index.html`；开发预览时可以打开 `page/index.html` 并手动导入 `results.json` 和 `report.md`。

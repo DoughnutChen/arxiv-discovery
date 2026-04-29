@@ -1,0 +1,42 @@
+[
+  {
+    "arxiv_id": "2306.05212v1",
+    "title": "RETA-LLM: A Retrieval-Augmented Large Language Model Toolkit",
+    "pdf_url": "https://arxiv.org/pdf/2306.05212v1",
+    "pdf_path": "runs/llm/pdfs/2306.05212v1.pdf",
+    "status": "exists",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2407.07093v1",
+    "title": "FBI-LLM: Scaling Up Fully Binarized LLMs from Scratch via Autoregressive Distillation",
+    "pdf_url": "https://arxiv.org/pdf/2407.07093v1",
+    "pdf_path": "runs/llm/pdfs/2407.07093v1.pdf",
+    "status": "exists",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2408.13006v2",
+    "title": "Systematic Evaluation of LLM-as-a-Judge in LLM Alignment Tasks: Explainable Metrics and Diverse Prompt Templates",
+    "pdf_url": "https://arxiv.org/pdf/2408.13006v2",
+    "pdf_path": "runs/llm/pdfs/2408.13006v2.pdf",
+    "status": "exists",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2406.01698v3",
+    "title": "Demystifying AI Platform Design for Distributed Inference of Next-Generation LLM models",
+    "pdf_url": "https://arxiv.org/pdf/2406.01698v3",
+    "pdf_path": "runs/llm/pdfs/2406.01698v3.pdf",
+    "status": "exists",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2601.17768v2",
+    "title": "LLM-42: Enabling Determinism in LLM Inference with Verified Speculation",
+    "pdf_url": "https://arxiv.org/pdf/2601.17768v2",
+    "pdf_path": "runs/llm/pdfs/2601.17768v2.pdf",
+    "status": "exists",
+    "error": ""
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "raw_query": "帮我找近三年 5 篇 LLM 和 RAG 相关论文",
+  "search_query": "LLM RAG",
+  "keywords": [
+    "LLM",
+    "RAG"
+  ],
+  "max_results": 5,
+  "date_from": "2023-04-30",
+  "date_to": "2026-04-29",
+  "date_note": "近 3 年"
+}

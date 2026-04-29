@@ -1,0 +1,11 @@
+{
+  "raw_query": "帮我找一些关于 LLM的论文",
+  "search_query": "LLM",
+  "keywords": [
+    "LLM"
+  ],
+  "max_results": 6,
+  "date_from": null,
+  "date_to": null,
+  "date_note": ""
+}
