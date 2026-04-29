@@ -1,0 +1,50 @@
+[
+  {
+    "arxiv_id": "2410.16284v2",
+    "title": "A 3D Framework for Improving Low-Latency Multi-Channel Live Streaming",
+    "pdf_url": "https://arxiv.org/pdf/2410.16284v2",
+    "pdf_path": "runs/6-3-live-stream/pdfs/2410.16284v2.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2305.10731v2",
+    "title": "Analyzing Norm Violations in Live-Stream Chat",
+    "pdf_url": "https://arxiv.org/pdf/2305.10731v2",
+    "pdf_path": "runs/6-3-live-stream/pdfs/2305.10731v2.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2402.13992v1",
+    "title": "Meditating in Live Stream: An Autoethnographic and Interview Study to Investigate Motivations, Interactions and Challenges",
+    "pdf_url": "https://arxiv.org/pdf/2402.13992v1",
+    "pdf_path": "runs/6-3-live-stream/pdfs/2402.13992v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2504.05217v1",
+    "title": "LLM-Alignment Live-Streaming Recommendation",
+    "pdf_url": "https://arxiv.org/pdf/2504.05217v1",
+    "pdf_path": "runs/6-3-live-stream/pdfs/2504.05217v1.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2410.04232v2",
+    "title": "Be There, Be Together, Be Streamed! AR Scenic Live-Streaming for an Interactive and Collective Experience",
+    "pdf_url": "https://arxiv.org/pdf/2410.04232v2",
+    "pdf_path": "runs/6-3-live-stream/pdfs/2410.04232v2.pdf",
+    "status": "downloaded",
+    "error": ""
+  },
+  {
+    "arxiv_id": "2310.03256v2",
+    "title": "Toward One-Second Latency: Evolution of Live Media Streaming",
+    "pdf_url": "https://arxiv.org/pdf/2310.03256v2",
+    "pdf_path": "runs/6-3-live-stream/pdfs/2310.03256v2.pdf",
+    "status": "downloaded",
+    "error": ""
+  }
+]

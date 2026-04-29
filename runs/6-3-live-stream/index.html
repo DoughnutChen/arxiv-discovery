@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ArXiv Discovery 论文雷达</title>
+    <style>
+:root {
+  --ink: #f5f0e6;
+  --muted: #b8b0a3;
+  --paper: #151820;
+  --panel: #1e2430;
+  --panel-2: #252b37;
+  --line: rgba(245, 240, 230, 0.14);
+  --gold: #d6aa58;
+  --sage: #8fb7a0;
+  --coral: #d88a70;
+  --blue: #88a6d8;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgba(214, 170, 88, 0.08), transparent 36rem),
+    radial-gradient(circle at top right, rgba(136, 166, 216, 0.12), transparent 28rem),
+    #10131a;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: max-content 1fr minmax(14rem, 22rem);
+  gap: 1.25rem;
+  align-items: center;
+  padding: 0.85rem clamp(1rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--line);
+  background: rgba(16, 19, 26, 0.88);
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  display: inline-flex;
+  gap: 0.65rem;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid rgba(214, 170, 88, 0.6);
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.nav a {
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--gold);
+}
+
+.search-box {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.search-box input,
+.import-panel input {
+  width: 100%;
+  min-width: 0;
+}
+
+.search-box input {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.55rem 0.7rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+}
+
+main {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.hero {
+  min-height: 58vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  gap: clamp(1.25rem, 3vw, 3rem);
+  align-items: center;
+  padding: clamp(2rem, 5vw, 4rem) 0 2.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.05;
+}
+
+h1 {
+  max-width: 10ch;
+  font-size: clamp(2.7rem, 7vw, 5.4rem);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 3vw, 2.4rem);
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.hero-text {
+  max-width: 38rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.import-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  max-width: 48rem;
+  margin-top: 2rem;
+}
+
+.is-exported .import-panel {
+  display: none;
+}
+
+.import-panel label {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.import-panel span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.hero-dashboard {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.metric,
+.query-card {
+  padding: 0.95rem;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  box-shadow: var(--shadow);
+}
+
+.metric span,
+.query-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 1.35rem;
+}
+
+.metric strong,
+.query-card span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.section-band {
+  padding: 4rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.section-heading {
+  display: block;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.summary-block {
+  max-width: 72rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-left: 4px solid var(--gold);
+  background: rgba(255, 255, 255, 0.05);
+  color: #eee6d8;
+  font-size: 1.1rem;
+}
+
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.paper-grid.empty {
+  display: block;
+  color: var(--muted);
+}
+
+.paper-card {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.paper-card.hidden {
+  display: none;
+}
+
+.paper-card-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 9rem;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(214, 170, 88, 0.12), transparent);
+}
+
+.paper-index {
+  margin: 0 0 0.45rem;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+}
+
+.meta-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 0.7rem;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.meta-list dt {
+  color: var(--gold);
+}
+
+.meta-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.link-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0 1.25rem 1rem;
+}
+
+.link-row a {
+  border: 1px solid var(--line);
+  padding: 0.35rem 0.65rem;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.86rem;
+}
+
+.link-row a:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.paper-body {
+  padding: 0 1.25rem 1.35rem;
+}
+
+.paper-body h4 {
+  margin: 0.9rem 0 0.35rem;
+  color: var(--gold);
+  font-size: 0.98rem;
+}
+
+.paper-body p {
+  margin: 0;
+  color: #eee6d8;
+  white-space: normal;
+}
+
+.summary-item {
+  margin: 0.65rem 0;
+}
+
+.summary-item strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--gold);
+  font-size: 0.92rem;
+}
+
+.radar {
+  width: 100%;
+  height: auto;
+}
+
+.radar text {
+  fill: var(--muted);
+  font-size: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 46rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+th,
+td {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+td {
+  color: var(--muted);
+}
+
+mark {
+  background: rgba(214, 170, 88, 0.35);
+  color: var(--ink);
+  padding: 0 0.1rem;
+}
+
+@media (max-width: 860px) {
+  .topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .hero,
+  .paper-grid,
+  .import-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-card-head {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+  }
+
+  .topbar,
+  .import-panel,
+  .search-box {
+    display: none;
+  }
+
+  main {
+    width: 100%;
+  }
+
+  .hero {
+    min-height: auto;
+  }
+
+  .paper-card,
+  .metric,
+  .query-card,
+  .summary-block {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+</style>
+  </head>
+  <body class="is-exported">
+    <header class="topbar">
+      <a class="brand" href="#hero" aria-label="回到顶部">
+        <span class="brand-mark">AD</span>
+        <span>ArXiv Discovery</span>
+      </a>
+      <nav class="nav">
+        <a href="#summary">整体摘要</a>
+        <a href="#papers">论文卡片</a>
+        <a href="#archive">归档表</a>
+      </nav>
+      <label class="search-box">
+        <span>搜索</span>
+        <input id="keywordInput" type="search" placeholder="标题 / 作者 / 摘要" />
+      </label>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Academic Radar Poster</p>
+          <h1>论文速读雷达</h1>
+          <p id="heroText" class="hero-text">
+            把零散论文压缩成一张可检索、可浏览、可打印的研究地图。
+          </p>
+</div>
+        <div class="hero-dashboard" aria-label="报告概览">
+          <div class="metric">
+            <span id="paperCount">0</span>
+            <strong>论文数量</strong>
+          </div>
+          <div class="metric">
+            <span id="sortValue">未导入</span>
+            <strong>排序方式</strong>
+          </div>
+          <div class="query-card">
+            <span>当前关键词</span>
+            <strong id="queryValue">等待导入</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="summary" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Overview</p>
+          <h2>整体摘要</h2>
+        </div>
+        <article id="overallSummary" class="summary-block">
+          请先导入完整流程生成的 `results.json` 和 `report.md`。如果只有 `results.json`，页面仍会展示论文元数据，但不会显示中文摘要。
+        </article>
+      </section>
+
+      <section id="papers" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Paper Radar</p>
+          <h2>论文卡片</h2>
+        </div>
+        <div id="paperGrid" class="paper-grid empty">
+          <p>尚未导入论文数据。</p>
+        </div>
+      </section>
+
+      <section id="archive" class="section-band">
+        <div class="section-heading">
+          <p class="eyebrow">Archive</p>
+          <h2>论文归档</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>优先级</th>
+                <th>Title</th>
+                <th>arXiv ID</th>
+                <th>日期</th>
+                <th>相关性</th>
+              </tr>
+            </thead>
+            <tbody id="archiveBody">
+              <tr>
+                <td colspan="5">尚未导入论文数据。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="paperTemplate">
+      <article class="paper-card">
+        <div class="paper-card-head">
+          <div>
+            <p class="paper-index"></p>
+            <h3></h3>
+          </div>
+          <div class="radar-slot"></div>
+        </div>
+        <dl class="meta-list"></dl>
+        <div class="link-row"></div>
+        <div class="paper-body">
+          <div class="paper-summary"></div>
+          <div class="paper-field"></div>
+          <div class="paper-reason"></div>
+        </div>
+      </article>
+    </template>
+
+    <script>
+window.ARXIV_DISCOVERY_DATA = {"results": {"query": "live-stream", "category": null, "sort_by": "relevance", "sort_order": "descending", "requested_results": 6, "date_from": "2023-05-01", "date_to": "2026-04-30", "keywords": ["live-stream"], "returned_results": 6, "papers": [{"arxiv_id": "2410.16284v2", "title": "A 3D Framework for Improving Low-Latency Multi-Channel Live Streaming", "summary": "The advent of 5G has driven the demand for high-quality, low-latency live streaming. However, challenges such as managing the increased data volume, ensuring synchronization across multiple streams, and maintaining consistent quality under varying network conditions persist, particularly in real-time video streaming. To address these issues, we propose a novel framework that leverages 3D virtual environments within game engines (e.g., Unity 3D) to optimize multi-channel live streaming. Our approach consolidates multi-camera video data into a single stream using multiple virtual 3D canvases, significantly increasing channel amounts while reducing latency and enhancing user flexibility. For demonstration of our approach, we utilize the Unity 3D engine to integrate multiple video inputs into a single-channel stream, supporting one-to-many broadcasting, one-to-one video calling, and real-time control of video channels. By mapping video data onto a world-space canvas and capturing it via an in-world camera, we minimize redundant data transmission, achieving efficient, low-latency streaming. Our results demonstrate that this method outperforms some existing multi-channel live streaming solutions in both latency reduction and user interaction responsiveness improvement. Our live video streaming system affiliated with this paper is also open-source at https://github.com/Aizierjiang/LiveStreaming.", "authors": ["Aizierjiang Aiersilan", "Zhiqiang Wang"], "published": "2024-10-05T02:21:57Z", "updated": "2025-04-30T13:49:35Z", "abstract_url": "http://arxiv.org/abs/2410.16284v2", "pdf_url": "https://arxiv.org/pdf/2410.16284v2", "primary_category": "cs.MM", "categories": ["cs.MM"]}, {"arxiv_id": "2305.10731v2", "title": "Analyzing Norm Violations in Live-Stream Chat", "summary": "Toxic language, such as hate speech, can deter users from participating in online communities and enjoying popular platforms. Previous approaches to detecting toxic language and norm violations have been primarily concerned with conversations from online forums and social media, such as Reddit and Twitter. These approaches are less effective when applied to conversations on live-streaming platforms, such as Twitch and YouTube Live, as each comment is only visible for a limited time and lacks a thread structure that establishes its relationship with other comments. In this work, we share the first NLP study dedicated to detecting norm violations in conversations on live-streaming platforms. We define norm violation categories in live-stream chats and annotate 4,583 moderated comments from Twitch. We articulate several facets of live-stream data that differ from other forums, and demonstrate that existing models perform poorly in this setting. By conducting a user study, we identify the informational context humans use in live-stream moderation, and train models leveraging context to identify norm violations. Our results show that appropriate contextual information can boost moderation performance by 35\\%.", "authors": ["Jihyung Moon", "Dong-Ho Lee", "Hyundong Cho", "Woojeong Jin", "Chan Young Park", "Minwoo Kim", "Jonathan May", "Jay Pujara", "Sungjoon Park"], "published": "2023-05-18T05:58:27Z", "updated": "2023-10-08T03:57:31Z", "abstract_url": "http://arxiv.org/abs/2305.10731v2", "pdf_url": "https://arxiv.org/pdf/2305.10731v2", "primary_category": "cs.CL", "categories": ["cs.CL"]}, {"arxiv_id": "2402.13992v1", "title": "Meditating in Live Stream: An Autoethnographic and Interview Study to Investigate Motivations, Interactions and Challenges", "summary": "Mindfulness practice has many mental and physical well-being benefits. With the increased popularity of live stream technologies and the impact of COVID-19, many people have turned to live stream tools to participate in online meditation sessions. To better understand the practices, challenges, and opportunities in live-stream meditation, we conducted a three-month autoethnographic study, during which two researchers participated in live-stream meditation sessions as the audience. Then we conducted a follow-up semi-structured interview study with 10 experienced live meditation teachers who use different live-stream tools. We found that live meditation, although having a weaker social presence than in-person meditation, facilitates attendees in establishing a practice routine and connecting with other meditators. Teachers use live streams to deliver the meditation practice to the world which also enhances their practice and brand building. We identified the challenges of using live-stream tools for meditation from the perspectives of both audiences and teachers, and provided design recommendations to better utilize live meditation as a resource for mental wellbeing.", "authors": ["Jingjin Li", "Jiajing Guo", "Gilly Leshed"], "published": "2024-02-21T18:24:07Z", "updated": "2024-02-21T18:24:07Z", "abstract_url": "http://arxiv.org/abs/2402.13992v1", "pdf_url": "https://arxiv.org/pdf/2402.13992v1", "primary_category": "cs.HC", "categories": ["cs.HC"]}, {"arxiv_id": "2504.05217v1", "title": "LLM-Alignment Live-Streaming Recommendation", "summary": "In recent years, integrated short-video and live-streaming platforms have gained massive global adoption, offering dynamic content creation and consumption. Unlike pre-recorded short videos, live-streaming enables real-time interaction between authors and users, fostering deeper engagement. However, this dynamic nature introduces a critical challenge for recommendation systems (RecSys): the same live-streaming vastly different experiences depending on when a user watching. To optimize recommendations, a RecSys must accurately interpret the real-time semantics of live content and align them with user preferences.", "authors": ["Yueyang Liu", "Jiangxia Cao", "Shen Wang", "Shuang Wen", "Xiang Chen", "Xiangyu Wu", "Shuang Yang", "Zhaojie Liu", "Kun Gai", "Guorui Zhou"], "published": "2025-04-07T16:04:00Z", "updated": "2025-04-07T16:04:00Z", "abstract_url": "http://arxiv.org/abs/2504.05217v1", "pdf_url": "https://arxiv.org/pdf/2504.05217v1", "primary_category": "cs.IR", "categories": ["cs.IR"]}, {"arxiv_id": "2410.04232v2", "title": "Be There, Be Together, Be Streamed! AR Scenic Live-Streaming for an Interactive and Collective Experience", "summary": "Scenic Live-Streaming (SLS), capturing real-world scenic sites from fixed cameras without streamers, combines scene immersion and the social and real-time characteristics of live-streaming into a unique experience. However, existing SLS affords limited audience interactions to engage them in a collective experience compared to many other live-streaming genres. It is also difficult for SLS to recreate important but intangible constituents of in-person trip experiences, such as cultural activities. To offer a more interactive, engaging, and meaningful experience, we propose ARSLS (Augmented Reality Scenic Live-Streaming). Culturally grounded AR objects with awareness of the live-streamed environment can be overlaid over camera views to provide additional interactive features while maintaining consistency with the live-streamed scene. To explore the design space of this new medium, we developed an ARSLS prototype for a famous landscape in China. A preliminary study (N=15) provided initial insights for ARSLS design.", "authors": ["Zeyu Huang", "Zuyu Xu", "Yuanhao Zhang", "Chengzhong Liu", "Yanwei Zhao", "Chuhan Shi", "Jason Chen Zhao", "Xiaojuan Ma"], "published": "2024-10-05T17:12:19Z", "updated": "2024-12-07T06:08:06Z", "abstract_url": "http://arxiv.org/abs/2410.04232v2", "pdf_url": "https://arxiv.org/pdf/2410.04232v2", "primary_category": "cs.HC", "categories": ["cs.HC"]}, {"arxiv_id": "2310.03256v2", "title": "Toward One-Second Latency: Evolution of Live Media Streaming", "summary": "This survey presents the evolution of live media streaming and the technological developments behind today's IP-based low-latency live streaming systems. Live streaming primarily involves capturing, encoding, packaging and delivering real-time events such as live sports, live news, personal broadcasts and surveillance videos. Live streaming also involves concurrent streaming of linear TV programming off the satellite, cable, over-the-air or IPTV broadcast, where the programming is not necessarily a real-time event. The survey starts with a discussion on the latency and latency continuum in streaming applications. Then, it lays out the existing live streaming workflows and protocols, followed by an in-depth analysis of the latency sources in these workflows and protocols. The survey continues with the technology enablers, low-latency extensions for the popular HTTP adaptive streaming methods and enhancements for robust low-latency playback. An entire section is dedicated to the detailed summary and findings of Twitch's grand challenge on low-latency live streaming. The survey concludes with a discussion of ongoing research problems in this space. We expect this survey to be the one-stop reference for those who would like to learn how low-latency live streaming has evolved and works today, and what further developments could happen in the future.", "authors": ["Abdelhak Bentaleb", "May Lim", "Mehmet N. Akcay", "Ali C. Begen", "Sarra Hammoudi", "Roger Zimmermann"], "published": "2023-10-05T02:18:55Z", "updated": "2025-03-28T21:00:19Z", "abstract_url": "http://arxiv.org/abs/2310.03256v2", "pdf_url": "https://arxiv.org/pdf/2310.03256v2", "primary_category": "cs.NI", "categories": ["cs.NI", "cs.MM"]}]}, "reportText": "# arXiv Discovery：live-stream\n\n- 搜索关键词：`live-stream`\n- arXiv 分类：`cs.MM / cs.CL / cs.HC / cs.IR`\n- 排序方式：`relevance/descending`\n- 处理论文数：`6`\n- 备注：`摘要按每批 2 篇分批生成，并合并为本报告。`\n\n## 整体摘要\n\n近期的六篇论文共同关注了直播流媒体领域的多个方面，包括技术优化、用户体验、内容推荐和社交互动。第一篇论文提出了一个3D框架，通过游戏引擎优化多频道直播流，显著降低了延迟并提高了用户交互性。第二篇论文聚焦于直播聊天中的规范违反行为，通过注释和模型训练，提高了版主性能。第三篇论文通过自传式和访谈研究，探讨了在线冥想直播的动机、互动和挑战，为设计支持心理健康的直播工具提供了见解。第四篇论文提出了一个利用多模态大型语言模型的直播流推荐框架，改善了推荐准确性。第五篇论文开发了一个增强现实风景直播流原型，通过增强现实对象与直播环境的交互，增强了观众的互动性和集体体验。最后一篇论文综述了直播媒体流的演变，特别关注了实现一秒内延迟的技术进步。这些研究从不同角度为直播流媒体领域提供了新的视角和技术解决方案，对理解直播流的发展趋势和优化用户体验具有重要的研究价值。\n\n## 1. A 3D Framework for Improving Low-Latency Multi-Channel Live Streaming\n\n- arXiv ID：`2410.16284v2`\n- 链接：[Abstract](https://arxiv.org/abs/2410.16284v2)，[PDF](https://arxiv.org/pdf/2410.16284v2)\n- 作者：Aizierjiang Aiersilan；Zhiqiang Wang\n- 发布/更新：2024-10-05T02:21:57Z / 2025-04-30T13:49:35Z\n\n### 摘要\n\n**研究问题**\n\n本文旨在解决5G时代对高质量、低延迟直播流的需求，特别是在多频道实时视频流中管理增加的数据量、确保多个流之间的同步以及在不同网络条件下保持一致质量的挑战。\n\n**研究方法**\n\n作者提出了一个新颖的框架，利用游戏引擎（例如Unity 3D）中的3D虚拟环境来优化多频道直播流。该方法通过多个虚拟3D画布将多摄像机视频数据整合到单一流中，显著增加频道数量，降低延迟，并增强用户灵活性。\n\n**研究结论**\n\n① 该方法在延迟降低方面优于一些现有的多频道直播流解决方案，延迟降低高达68.7%。\n② 通过优化多摄像机视频数据处理和传输，提高了可扩展性。\n③ 通过3D虚拟环境中的实时控制，增强了用户交互，响应时间平均为600毫秒。\n④ 该方法在VR/AR/MR和远程协作中具有更广泛的适用性，为不同行业需求提供了强大的解决方案。\n\n### 具体领域\n\n- 多媒体 / 计算机视觉\n\n### 推荐原因\n\n该论文为直播流技术领域提供了一种创新的3D框架，对于改善低延迟多频道直播流具有重要的理论和实践价值。\n\n## 2. Analyzing Norm Violations in Live-Stream Chat\n\n- arXiv ID：`2305.10731v2`\n- 链接：[Abstract](https://arxiv.org/abs/2305.10731v2)，[PDF](https://arxiv.org/pdf/2305.10731v2)\n- 作者：Jihyung Moon；Dong-Ho Lee；Hyundong Cho；Woojeong Jin；Chan Young Park；Minwoo Kim；Jonathan May；Jay Pujara；Sungjoon Park\n- 发布/更新：2023-05-18T05:58:27Z / 2023-10-08T03:57:31Z\n\n### 摘要\n\n**研究问题**\n\n本文关注直播聊天中的规范违反行为，尤其是如何检测直播平台上的有毒语言和规范违反，这些行为会阻碍用户参与在线社区并享受流行平台。\n\n**研究方法**\n\n研究者定义了直播聊天中的规范违反类别，并注释了来自Twitch的4583条被版主管理的评论。通过用户研究，识别了人类在直播流版主中使用的上下文信息，并训练了利用上下文识别规范违反的模型。\n\n**研究结论**\n\n① 直播聊天与以前的社交媒体数据集相比，具有独特的同步对话特征，现有模型在这一设置中表现不佳。\n② 适当的上下文信息可以将版主性能提高35%。\n③ 聊天和视频上下文等额外信息对于识别直播聊天中的规范违反至关重要。\n\n### 具体领域\n\n- 自然语言处理 / 计算社会选择\n\n### 推荐原因\n\n该论文是首个专注于直播聊天中规范违反检测的NLP研究，对于理解和改进直播聊天环境中的版主策略具有重要意义。\n\n## 3. Meditating in Live Stream: An Autoethnographic and Interview Study to Investigate Motivations, Interactions and Challenges\n\n- arXiv ID：`2402.13992v1`\n- 链接：[Abstract](https://arxiv.org/abs/2402.13992v1)，[PDF](https://arxiv.org/pdf/2402.13992v1)\n- 作者：Jingjin Li；Jiajing Guo；Gilly Leshed\n- 发布/更新：2024-02-21 / 2024-02-21\n\n### 摘要\n\n**研究问题**\n\n本研究旨在探究在线冥想直播的实践、挑战和机遇，特别是在COVID-19疫情推动下，人们如何通过直播工具参与在线冥想课程。\n\n**研究方法**\n\n研究者通过三个月的自传式研究参与在线冥想直播课程，并随后对10位使用不同直播工具的经验丰富的冥想老师进行了半结构化访谈。\n\n**研究结论**\n\n① 尽管在线冥想直播的社会存在感比面对面冥想弱，但有助于参与者建立冥想习惯并与其他冥想者建立联系。\n② 冥想老师使用直播流将冥想实践传播到全世界，这也增强了他们自己的实践和品牌建设。\n③ 从观众和老师的角度识别了使用直播工具进行冥想的挑战，并提供了设计建议，以更好地利用在线冥想作为心理健康资源。\n\n### 具体领域\n\n- 人机交互 / 心理健康\n\n### 推荐原因\n\n该研究为理解在线冥想直播的社会和技术动态提供了深入见解，对设计支持心理健康的直播工具具有启发性。\n\n## 4. LLM-Alignment Live-Streaming Recommendation\n\n- arXiv ID：`2504.05217v1`\n- 链接：[Abstract](https://arxiv.org/abs/2504.05217v1)，[PDF](https://arxiv.org/pdf/2504.05217v1)\n- 作者：Yueyang Liu；Jiangxia Cao；Shen Wang；Shuang Wen；Xiang Chen；Xiangyu Wu；Shuang Yang；Zhaojie Liu；Kun Gai；Guorui Zhou\n- 发布/更新：2025-04-07 / 2025-04-07\n\n### 摘要\n\n**研究问题**\n\n随着短视频和直播流平台的全球普及，推荐系统面临一个关键挑战：同一直播流在不同时间点观看会带给用户完全不同的体验，需要准确解释直播内容的实时语义并将其与用户偏好对齐。\n\n**研究方法**\n\n提出了LARM框架，利用多模态大型语言模型（LLM）来解决直播流推荐的时序动态问题，包括对LLM进行微调、将LLM生成的嵌入与推荐系统ID嵌入对齐，并将对齐的嵌入转换为可学习的语义代码特征。\n\n**研究结论**\n\n① LARM通过微调开源LLM以增强对实时内容的理解，生成上下文感知的嵌入。\n② 通过门控机制将LLM生成的嵌入与推荐系统ID嵌入投影到统一空间，确保与用户-项目交互信号的兼容性。\n③ 将对齐的嵌入转换为可学习的语义代码特征，丰富了推荐系统检索和排名阶段。\n\n### 具体领域\n\n- 信息检索 / 推荐系统\n\n### 推荐原因\n\nLARM框架为直播流推荐系统提供了一种新的解决方案，通过多模态LLM改善推荐准确性，对工业级推荐系统设计具有重要的参考价值。\n\n## 5. Be There, Be Together, Be Streamed! AR Scenic Live-Streaming for an Interactive and Collective Experience\n\n- arXiv ID：`2410.04232v2`\n- 链接：[Abstract](https://arxiv.org/abs/2410.04232v2)，[PDF](https://arxiv.org/pdf/2410.04232v2)\n- 作者：Zeyu Huang；Zuyu Xu；Yuanhao Zhang；Chengzhong Liu；Yanwei Zhao；Chuhan Shi；Jason Chen Zhao；Xiaojuan Ma\n- 发布/更新：2024-10-05 / 2024-12-07\n\n### 摘要\n\n**研究问题**\n\n本文旨在解决风景直播流（SLS）中观众互动性不足和难以重现亲身旅行体验中文化活动的问题，提出增强现实风景直播流（ARSLS）以提供更具互动性、吸引力和意义的体验。\n\n**研究方法**\n\n研究者开发了一个ARSLS原型，通过在中国著名景点设置固定摄像头，将文化相关的增强现实对象叠加到摄像头视图上，同时保持与直播场景的一致性，并通过初步研究（N=15）为ARSLS设计提供见解。\n\n**研究结论**\n\n① ARSLS通过增强现实对象与直播环境的交互，增强了观众的互动性和集体体验。\n\n② 通过设计具体的互动特性，ARSLS原型利用现场和文化元素驱动观众的自发和集体互动。\n\n### 具体领域\n\n增强现实 / 直播流媒体\n\n### 推荐原因\n\n该论文为直播流媒体领域提供了一种新的增强现实应用方式，对于研究如何通过技术提升直播体验具有启发性。\n\n## 6. Toward One-Second Latency: Evolution of Live Media Streaming\n\n- arXiv ID：`2310.03256v2`\n- 链接：[Abstract](https://arxiv.org/abs/2310.03256v2)，[PDF](https://arxiv.org/pdf/2310.03256v2)\n- 作者：Abdelhak Bentaleb；May Lim；Mehmet N. Akcay；Ali C. Begen；Sarra Hammoudi；Roger Zimmermann\n- 发布/更新：2023-10-05 / 2025-03-28\n\n### 摘要\n\n**研究问题**\n\n本文综述了直播媒体流的演变和技术发展，特别关注了实现一秒内延迟的IP基础低延迟直播流系统背后的技术进步。\n\n**研究方法**\n\n文章从延迟和延迟范围的讨论开始，详细分析了现有直播流工作流程和协议中的延迟来源，并探讨了技术支持、低延迟扩展以及对稳健低延迟播放的增强。\n\n**研究结论**\n\n① 直播流的E2E（端到端）延迟是衡量服务质量的关键指标，不同应用对延迟的容忍度不同。\n\n② 为了实现低延迟直播，已经开发了流行的HTTP自适应流方法的低延迟扩展，如LL-DASH和LL-HLS。\n\n### 具体领域\n\n网络技术 / 流媒体技术\n\n### 推荐原因\n\n该综述为理解低延迟直播流的发展历程和当前工作机制提供了全面的参考，对直播流媒体技术的研究和实践具有重要价值。\n"};
+</script>
+<script>
+const state = {
+  results: null,
+  reportText: "",
+  parsedReport: { overall: "", papers: [] },
+  mergedPapers: [],
+};
+
+const nodes = {
+  resultsFile: document.querySelector("#resultsFile"),
+  reportFile: document.querySelector("#reportFile"),
+  keywordInput: document.querySelector("#keywordInput"),
+  paperCount: document.querySelector("#paperCount"),
+  sortValue: document.querySelector("#sortValue"),
+  queryValue: document.querySelector("#queryValue"),
+  heroText: document.querySelector("#heroText"),
+  overallSummary: document.querySelector("#overallSummary"),
+  paperGrid: document.querySelector("#paperGrid"),
+  archiveBody: document.querySelector("#archiveBody"),
+  paperTemplate: document.querySelector("#paperTemplate"),
+};
+
+if (nodes.resultsFile) {
+  nodes.resultsFile.addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    state.results = JSON.parse(text);
+    render();
+  });
+}
+
+if (nodes.reportFile) {
+  nodes.reportFile.addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    state.reportText = await file.text();
+    state.parsedReport = parseReport(state.reportText);
+    render();
+  });
+}
+
+nodes.keywordInput.addEventListener("input", () => {
+  applySearch(nodes.keywordInput.value.trim());
+});
+
+const embedded = window.ARXIV_DISCOVERY_DATA;
+if (embedded?.results) {
+  document.body.classList.add("is-exported");
+  state.results = embedded.results;
+  state.reportText = embedded.reportText || "";
+  state.parsedReport = parseReport(state.reportText);
+  render();
+}
+
+function parseReport(markdown) {
+  const overallMatch = markdown.match(/##\s*整体摘要\s*([\s\S]*?)(?=\n##\s+\d+\.|\n##\s+阅读顺序|\n##\s+[^\n]+|$)/);
+  const papers = [];
+  const paperPattern = /##\s+(\d+)\.\s+(.+?)\n([\s\S]*?)(?=\n##\s+\d+\.|\n##\s+阅读顺序|$)/g;
+  let match;
+  while ((match = paperPattern.exec(markdown)) !== null) {
+    const body = match[3];
+    papers.push({
+      index: Number(match[1]),
+      title: match[2].trim(),
+      arxivId: pick(body, /arXiv ID[：:]\s*`?([^`\n]+)`?/),
+      authors: pick(body, /作者[：:]\s*([^\n]+)/),
+      date: pick(body, /发布\/更新[：:]\s*([^\n]+)/),
+      summaryParts: researchSummaryParts(body),
+      summary: researchSummary(body),
+      field: section(body, "具体领域"),
+      reason: section(body, "推荐原因"),
+    });
+  }
+  return {
+    overall: cleanup(overallMatch?.[1] || ""),
+    papers,
+  };
+}
+
+function pick(text, pattern) {
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function section(text, title) {
+  const pattern = new RegExp(`###\\s*${title}\\s*([\\s\\S]*?)(?=\\n###\\s+|$)`);
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function boldSection(text, title) {
+  const pattern = new RegExp(`\\*\\*${title}\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*[^*]+\\*\\*|\\n###\\s+|$)`);
+  return cleanup(text.match(pattern)?.[1] || "");
+}
+
+function researchSummaryParts(text) {
+  const summaryBlock = section(text, "摘要");
+  return {
+    question: boldSection(summaryBlock, "研究问题") || section(text, "研究问题"),
+    method: boldSection(summaryBlock, "研究方法") || section(text, "研究方法"),
+    findings: boldSection(summaryBlock, "研究结论") || section(text, "研究结论"),
+  };
+}
+
+function researchSummary(text) {
+  const summaryParts = researchSummaryParts(text);
+  const parts = [
+    ["研究问题", summaryParts.question],
+    ["研究方法", summaryParts.method],
+    ["研究结论", summaryParts.findings],
+  ].filter(([, value]) => value);
+  return parts.map(([title, value]) => `${title}：${value}`).join("\n\n");
+}
+
+function cleanup(text) {
+  return text
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/\[[^\]]+\]\([^)]+\)/g, (value) => value.replace(/\(([^)]+)\)/, ""))
+    .replace(/\s+\n/g, "\n")
+    .trim();
+}
+
+function render() {
+  const results = state.results || {};
+  const metadataPapers = Array.isArray(results.papers) ? results.papers : [];
+  state.mergedPapers = metadataPapers.map((paper, index) => mergePaper(paper, index));
+
+  nodes.paperCount.textContent = String(metadataPapers.length || state.parsedReport.papers.length || 0);
+  nodes.sortValue.textContent = results.sort_by ? `${results.sort_by}/${results.sort_order || "descending"}` : "未导入";
+  nodes.queryValue.textContent = results.query || "等待导入";
+  nodes.overallSummary.textContent =
+    state.parsedReport.overall ||
+    (metadataPapers.length ? "已导入 arXiv 元数据。继续导入 report.md 后，将显示整体摘要和单篇推荐原因。" : "请先导入完整流程生成的 results.json 和 report.md。");
+
+  renderPapers(state.mergedPapers.length ? state.mergedPapers : state.parsedReport.papers);
+  renderArchive(state.mergedPapers);
+  applySearch(nodes.keywordInput.value.trim());
+}
+
+function mergePaper(paper, index) {
+  const reportPaper = state.parsedReport.papers.find((item) => samePaper(item, paper, index));
+  const authors = Array.isArray(paper.authors) ? paper.authors.join("；") : paper.authors || reportPaper?.authors || "";
+  return {
+    index: index + 1,
+    title: paper.title || reportPaper?.title || `Paper ${index + 1}`,
+    arxivId: paper.arxiv_id || reportPaper?.arxivId || "",
+    authors,
+    date: dateOnly(paper.published || paper.updated || reportPaper?.date || ""),
+    abstractUrl: paper.abstract_url || "",
+    pdfUrl: paper.pdf_url || "",
+    categories: paper.categories || [],
+    arxivSummary: paper.summary || "",
+    summaryParts: reportPaper?.summaryParts || null,
+    field: reportPaper?.field || "",
+    summary: reportPaper?.summary || "尚未导入 report.md，暂无中文摘要。",
+    reason: reportPaper?.reason || "尚未导入 report.md，暂无推荐原因。",
+  };
+}
+
+function samePaper(reportPaper, paper, index) {
+  if (reportPaper.arxivId && paper.arxiv_id) return reportPaper.arxivId === paper.arxiv_id;
+  if (reportPaper.title && paper.title) return normalize(reportPaper.title) === normalize(paper.title);
+  return reportPaper.index === index + 1;
+}
+
+function normalize(value) {
+  return String(value).replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function dateOnly(value) {
+  return String(value).slice(0, 10) || "未知";
+}
+
+function renderPapers(papers) {
+  nodes.paperGrid.innerHTML = "";
+  nodes.paperGrid.classList.toggle("empty", papers.length === 0);
+  if (!papers.length) {
+    nodes.paperGrid.textContent = "尚未导入论文数据。";
+    return;
+  }
+
+  papers.forEach((paper, index) => {
+    const fragment = nodes.paperTemplate.content.cloneNode(true);
+    const card = fragment.querySelector(".paper-card");
+    card.dataset.search = [paper.title, paper.authors, paper.summary, paper.reason, paper.arxivSummary].join(" ").toLowerCase();
+    fragment.querySelector(".paper-index").textContent = `Paper ${String(index + 1).padStart(2, "0")}`;
+    fragment.querySelector("h3").textContent = paper.title;
+    fragment.querySelector(".meta-list").innerHTML = metadataMarkup(paper);
+    fragment.querySelector(".link-row").innerHTML = linksMarkup(paper);
+    fragment.querySelector(".paper-summary").innerHTML = summaryMarkup(paper);
+    fragment.querySelector(".paper-field").innerHTML = sectionMarkup("具体领域", paper.field || "暂无具体领域。");
+    fragment.querySelector(".paper-reason").innerHTML = sectionMarkup("推荐原因", paper.reason || "暂无推荐原因。");
+    fragment.querySelector(".radar-slot").innerHTML = radarSvg(scorePaper(paper));
+    nodes.paperGrid.appendChild(fragment);
+  });
+}
+
+function summaryMarkup(paper) {
+  const parts = paper.summaryParts || {};
+  if (parts.question || parts.method || parts.findings) {
+    return [
+      `<h4>摘要</h4>`,
+      summaryItemMarkup("研究问题", parts.question),
+      summaryItemMarkup("研究方法", parts.method),
+      summaryItemMarkup("研究结论", parts.findings),
+    ].join("");
+  }
+  return sectionMarkup("摘要", paper.summary || "暂无摘要。");
+}
+
+function summaryItemMarkup(title, value) {
+  if (!value) return "";
+  return `<div class="summary-item"><strong>${escapeHtml(title)}</strong><p>${formatMultiline(value)}</p></div>`;
+}
+
+function sectionMarkup(title, value) {
+  return `<h4>${escapeHtml(title)}</h4><p>${formatMultiline(value)}</p>`;
+}
+
+function formatMultiline(value) {
+  return escapeHtml(value)
+    .split(/\n+/)
+    .filter(Boolean)
+    .map((line) => line.trim())
+    .join("<br />");
+}
+
+function metadataMarkup(paper) {
+  return [
+    ["arXiv", paper.arxivId || "未知"],
+    ["日期", paper.date || "未知"],
+    ["作者", paper.authors || "未知"],
+    ["分类", Array.isArray(paper.categories) ? paper.categories.join(" / ") : "未知"],
+  ]
+    .map(([key, value]) => `<dt>${escapeHtml(key)}</dt><dd>${escapeHtml(value)}</dd>`)
+    .join("");
+}
+
+function linksMarkup(paper) {
+  if (paper.pdfUrl) {
+    return `<a href="${escapeAttribute(paper.pdfUrl)}" target="_blank" rel="noreferrer">PDF下载</a>`;
+  }
+  return "<span>暂无 PDF</span>";
+}
+
+function scorePaper(paper) {
+  const query = normalize(state.results?.query || "");
+  const text = normalize([paper.title, paper.arxivSummary, paper.summary].join(" "));
+  const tokens = query.split(/\s+/).filter(Boolean);
+  const matched = tokens.filter((token) => text.includes(token)).length;
+  const relevance = tokens.length ? Math.round((matched / tokens.length) * 100) : 70;
+  const summaryDepth = Math.min(100, Math.round(((paper.summary || "").length / 260) * 100));
+  const metadata = [paper.title, paper.authors, paper.date, paper.abstractUrl, paper.pdfUrl].filter(Boolean).length * 20;
+  const freshness = freshnessScore(paper.date);
+  const readability = Math.min(100, Math.round(((paper.reason || "").length / 60) * 100));
+  return [
+    ["相关性", clamp(relevance)],
+    ["摘要", clamp(summaryDepth)],
+    ["元数据", clamp(metadata)],
+    ["时效", clamp(freshness)],
+    ["推荐", clamp(readability)],
+  ];
+}
+
+function freshnessScore(dateText) {
+  const time = Date.parse(dateText);
+  if (Number.isNaN(time)) return 55;
+  const days = (Date.now() - time) / 86400000;
+  if (days <= 30) return 100;
+  if (days <= 365) return 85;
+  if (days <= 1095) return 70;
+  return 55;
+}
+
+function clamp(value) {
+  return Math.max(0, Math.min(100, value));
+}
+
+function radarSvg(scores) {
+  const size = 132;
+  const center = size / 2;
+  const radius = 44;
+  const points = scores.map(([, score], index) => point(center, radius * (score / 100), index, scores.length));
+  const grid = [0.33, 0.66, 1]
+    .map((scale) => polygon(scores.map((_, index) => point(center, radius * scale, index, scores.length)), "none", "rgba(245,240,230,.18)"))
+    .join("");
+  const axes = scores
+    .map(([label], index) => {
+      const end = point(center, radius, index, scores.length);
+      const labelPoint = point(center, radius + 14, index, scores.length);
+      return `<line x1="${center}" y1="${center}" x2="${end.x}" y2="${end.y}" stroke="rgba(245,240,230,.14)" /><text x="${labelPoint.x}" y="${labelPoint.y}" text-anchor="middle">${label}</text>`;
+    })
+    .join("");
+  return `<svg class="radar" viewBox="0 0 ${size} ${size}" role="img" aria-label="论文雷达评分">${grid}${axes}${polygon(points, "rgba(214,170,88,.35)", "#d6aa58")}</svg>`;
+}
+
+function point(center, radius, index, total) {
+  const angle = -Math.PI / 2 + (Math.PI * 2 * index) / total;
+  return {
+    x: Number((center + Math.cos(angle) * radius).toFixed(2)),
+    y: Number((center + Math.sin(angle) * radius).toFixed(2)),
+  };
+}
+
+function polygon(points, fill, stroke) {
+  const value = points.map((item) => `${item.x},${item.y}`).join(" ");
+  return `<polygon points="${value}" fill="${fill}" stroke="${stroke}" stroke-width="1.4" />`;
+}
+
+function renderArchive(papers) {
+  if (!papers.length) {
+    nodes.archiveBody.innerHTML = `<tr><td colspan="5">尚未导入论文数据。</td></tr>`;
+    return;
+  }
+  nodes.archiveBody.innerHTML = papers
+    .map((paper, index) => {
+      const score = average(scorePaper(paper).map((item) => item[1]));
+      return `<tr><td>${index + 1}</td><td>${escapeHtml(paper.title)}</td><td>${escapeHtml(paper.arxivId)}</td><td>${escapeHtml(paper.date)}</td><td>${score} / 100</td></tr>`;
+    })
+    .join("");
+}
+
+function average(values) {
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function applySearch(keyword) {
+  const normalized = keyword.toLowerCase();
+  document.querySelectorAll(".paper-card").forEach((card) => {
+    const matched = !normalized || card.dataset.search.includes(normalized);
+    card.classList.toggle("hidden", !matched);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll("`", "&#096;");
+}
+
+</script>
+  </body>
+</html>

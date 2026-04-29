@@ -1,0 +1,136 @@
+{
+  "query": "human behavior",
+  "category": null,
+  "sort_by": "relevance",
+  "sort_order": "descending",
+  "requested_results": 6,
+  "date_from": "2023-05-01",
+  "date_to": "2026-04-30",
+  "keywords": [
+    "human behavior"
+  ],
+  "returned_results": 6,
+  "papers": [
+    {
+      "arxiv_id": "2411.10872v4",
+      "title": "In silico discovery of representational relationships across visual cortex",
+      "summary": "Now published in Nature Human Behavior doi: https://doi.org/10.1038/s41562-025-02252-z Human vision is mediated by a complex interconnected network of cortical brain areas that jointly represent visual information. While these areas are increasingly understood in isolation, their representational relationships remain elusive. Here we developed relational neural control (RNC), and used it to investigate the representational relationships for univariate and multivariate fMRI responses of areas across visual cortex. Through RNC we generated and explored in silico fMRI responses for large amounts of images, discovering controlling images that align or disentangle responses across areas, thus indicating their shared or unique representational content. This revealed a typical network-level configuration of representational relationships in which shared or unique representational content varied based on cortical distance, categorical selectivity, and position within the visual hierarchy. Closing the empirical cycle, we validated the in silico discoveries on in vivo fMRI responses from independent subjects. Together, this reveals how visual areas jointly represent the world as an interconnected network.",
+      "authors": [
+        "Alessandro T. Gifford",
+        "Maya A. Jastrzębowska",
+        "Johannes J. D. Singer",
+        "Radoslaw M. Cichy"
+      ],
+      "published": "2024-11-16T19:36:30Z",
+      "updated": "2025-06-25T10:50:27Z",
+      "abstract_url": "http://arxiv.org/abs/2411.10872v4",
+      "pdf_url": "https://arxiv.org/pdf/2411.10872v4",
+      "primary_category": "q-bio.NC",
+      "categories": [
+        "q-bio.NC"
+      ]
+    },
+    {
+      "arxiv_id": "2412.07788v1",
+      "title": "Human Behavior Simulation: Objectives, Methodologies, and Open Problems",
+      "summary": "In recent years, human behavior simulation has drawn increasing attention from both academia and industry. The reasons fall into two aspects. First, simulation serves as a critical tool for understanding human behaviors, which has become one of the most important research topics in the history. Second, researchers have gradually reached a consensus that simulation, especially human behavior simulation, is critical for real-world decision-making systems. As a result, lots of human behavior simulation research and applications have sprung up across numerous disciplines in the past few years. In addition to the traditional methods, such as building mathematical and physical models, leveraging the recent advances of deep learning techniques -- especially the nascent Large Language Model technology -- for accurate human behavior simulation has also been one of the hottest research topics. In this study, we provide a comprehensive review of the latest research advancements in human behavior simulation. We summarize the objectives, problem formulations, and commonly used methods and discuss the consistency in the development of related research in different disciplines, which reveals the gaps and opportunities for high-impact research in this promising direction.",
+      "authors": [
+        "Zhang Guozhen",
+        "Yu Zihan",
+        "Li Nian",
+        "Yu Fudan",
+        "Long Qingyue",
+        "Jin Depeng",
+        "Li Yong"
+      ],
+      "published": "2024-11-26T05:33:38Z",
+      "updated": "2024-11-26T05:33:38Z",
+      "abstract_url": "http://arxiv.org/abs/2412.07788v1",
+      "pdf_url": "https://arxiv.org/pdf/2412.07788v1",
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ]
+    },
+    {
+      "arxiv_id": "2404.14647v1",
+      "title": "Human Behavior Modeling via Identification of Task Objective and Variability",
+      "summary": "Human behavior modeling is important for the design and implementation of human-automation interactive control systems. In this context, human behavior refers to a human's control input to systems. We propose a novel method for human behavior modeling that uses human demonstrations for a given task to infer the unknown task objective and the variability. The task objective represents the human's intent or desire. It can be inferred by the inverse optimal control and improve the understanding of human behavior by providing an explainable objective function behind the given human behavior. Meanwhile, the variability denotes the intrinsic uncertainty in human behavior. It can be described by a Gaussian mixture model and capture the uncertainty in human behavior which cannot be encoded by the task objective. The proposed method can improve the prediction accuracy of human behavior by leveraging both task objective and variability. The proposed method is demonstrated through human-subject experiments using an illustrative quadrotor remote control example.",
+      "authors": [
+        "Sooyung Byeon",
+        "Dawei Sun",
+        "Inseok Hwang"
+      ],
+      "published": "2024-04-23T00:50:32Z",
+      "updated": "2024-04-23T00:50:32Z",
+      "abstract_url": "http://arxiv.org/abs/2404.14647v1",
+      "pdf_url": "https://arxiv.org/pdf/2404.14647v1",
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ]
+    },
+    {
+      "arxiv_id": "2504.09717v1",
+      "title": "Adapting Robot's Explanation for Failures Based on Observed Human Behavior in Human-Robot Collaboration",
+      "summary": "This work aims to interpret human behavior to anticipate potential user confusion when a robot provides explanations for failure, allowing the robot to adapt its explanations for more natural and efficient collaboration. Using a dataset that included facial emotion detection, eye gaze estimation, and gestures from 55 participants in a user study, we analyzed how human behavior changed in response to different types of failures and varying explanation levels. Our goal is to assess whether human collaborators are ready to accept less detailed explanations without inducing confusion. We formulate a data-driven predictor to predict human confusion during robot failure explanations. We also propose and evaluate a mechanism, based on the predictor, to adapt the explanation level according to observed human behavior. The promising results from this evaluation indicate the potential of this research in adapting a robot's explanations for failures to enhance the collaborative experience.",
+      "authors": [
+        "Andreas Naoum",
+        "Parag Khanna",
+        "Elmira Yadollahi",
+        "Mårten Björkman",
+        "Christian Smith"
+      ],
+      "published": "2025-04-13T20:49:43Z",
+      "updated": "2025-04-13T20:49:43Z",
+      "abstract_url": "http://arxiv.org/abs/2504.09717v1",
+      "pdf_url": "https://arxiv.org/pdf/2504.09717v1",
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.HC"
+      ]
+    },
+    {
+      "arxiv_id": "2507.19495v1",
+      "title": "Simulating Human Behavior with the Psychological-mechanism Agent: Integrating Feeling, Thought, and Action",
+      "summary": "Generative agents have made significant progress in simulating human behavior, but existing frameworks often simplify emotional modeling and focus primarily on specific tasks, limiting the authenticity of the simulation. Our work proposes the Psychological-mechanism Agent (PSYA) framework, based on the Cognitive Triangle (Feeling-Thought-Action), designed to more accurately simulate human behavior. The PSYA consists of three core modules: the Feeling module (using a layer model of affect to simulate changes in short-term, medium-term, and long-term emotions), the Thought module (based on the Triple Network Model to support goal-directed and spontaneous thinking), and the Action module (optimizing agent behavior through the integration of emotions, needs and plans). To evaluate the framework's effectiveness, we conducted daily life simulations and extended the evaluation metrics to self-influence, one-influence, and group-influence, selection five classic psychological experiments for simulation. The results show that the PSYA framework generates more natural, consistent, diverse, and credible behaviors, successfully replicating human experimental outcomes. Our work provides a richer and more accurate emotional and cognitive modeling approach for generative agents and offers an alternative to human participants in psychological experiments.",
+      "authors": [
+        "Qing Dong",
+        "Pengyuan Liu",
+        "Dong Yu",
+        "Chen Kang"
+      ],
+      "published": "2025-06-04T02:12:17Z",
+      "updated": "2025-06-04T02:12:17Z",
+      "abstract_url": "http://arxiv.org/abs/2507.19495v1",
+      "pdf_url": "https://arxiv.org/pdf/2507.19495v1",
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC",
+        "cs.AI"
+      ]
+    },
+    {
+      "arxiv_id": "2401.05840v1",
+      "title": "Decoding AI's Nudge: A Unified Framework to Predict Human Behavior in AI-assisted Decision Making",
+      "summary": "With the rapid development of AI-based decision aids, different forms of AI assistance have been increasingly integrated into the human decision making processes. To best support humans in decision making, it is essential to quantitatively understand how diverse forms of AI assistance influence humans' decision making behavior. To this end, much of the current research focuses on the end-to-end prediction of human behavior using ``black-box'' models, often lacking interpretations of the nuanced ways in which AI assistance impacts the human decision making process. Meanwhile, methods that prioritize the interpretability of human behavior predictions are often tailored for one specific form of AI assistance, making adaptations to other forms of assistance difficult. In this paper, we propose a computational framework that can provide an interpretable characterization of the influence of different forms of AI assistance on decision makers in AI-assisted decision making. By conceptualizing AI assistance as the ``{\\em nudge}'' in human decision making processes, our approach centers around modelling how different forms of AI assistance modify humans' strategy in weighing different information in making their decisions. Evaluations on behavior data collected from real human decision makers show that the proposed framework outperforms various baselines in accurately predicting human behavior in AI-assisted decision making. Based on the proposed framework, we further provide insights into how individuals with different cognitive styles are nudged by AI assistance differently.",
+      "authors": [
+        "Zhuoyan Li",
+        "Zhuoran Lu",
+        "Ming Yin"
+      ],
+      "published": "2024-01-11T11:22:36Z",
+      "updated": "2024-01-11T11:22:36Z",
+      "abstract_url": "http://arxiv.org/abs/2401.05840v1",
+      "pdf_url": "https://arxiv.org/pdf/2401.05840v1",
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC",
+        "cs.AI"
+      ]
+    }
+  ]
+}

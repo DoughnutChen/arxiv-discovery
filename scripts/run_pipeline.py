@@ -86,6 +86,7 @@ def main() -> int:
     parser.add_argument("--skip-download", action="store_true", help="只搜索 arXiv，不下载 PDF。")
     parser.add_argument("--skip-extract", action="store_true", help="搜索和下载 PDF，但不提取正文。")
     parser.add_argument("--skip-summary", action="store_true", help="不生成中文摘要报告。")
+    parser.add_argument("--summary-batch-size", type=int, default=2, help="每次提交给模型总结的论文篇数，默认 2。")
     parser.add_argument("--skip-html", action="store_true", help="不导出最终 HTML 页面。")
     parser.add_argument("--no-open", action="store_true", help="HTML 生成后不自动打开页面。")
     parser.add_argument("--save-prompt", action="store_true", help="保存发送给模型的提示词，便于开发调试。")
@@ -93,6 +94,8 @@ def main() -> int:
 
     if args.max_results is not None and args.max_results < 1:
         parser.error("--max-results 必须至少为 1")
+    if args.summary_batch_size < 1:
+        parser.error("--summary-batch-size 必须至少为 1")
 
     try:
         request_text = args.query.strip() if args.query else ask_query()
@@ -191,6 +194,8 @@ def main() -> int:
                 provider_settings["base_url"],
                 "--api-key-env",
                 provider_settings["api_key_env"],
+                "--batch-size",
+                str(args.summary_batch_size),
             ]
             if text_available:
                 summary_command.extend(["--text-dir", str(text_dir)])

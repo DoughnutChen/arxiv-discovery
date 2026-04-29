@@ -1,14 +1,55 @@
 {
-  "query": "找2篇最近3年发表的，simulation相关的论文",
+  "query": "simulation",
   "category": null,
   "sort_by": "relevance",
   "sort_order": "descending",
-  "requested_results": 6,
-  "date_from": null,
-  "date_to": null,
+  "requested_results": 2,
+  "date_from": "2023-05-01",
+  "date_to": "2026-04-30",
   "keywords": [
-    "找2篇最近3年发表的，simulation相关的论文"
+    "simulation"
   ],
-  "returned_results": 0,
-  "papers": []
+  "returned_results": 2,
+  "papers": [
+    {
+      "arxiv_id": "2410.16956v1",
+      "title": "Towards an Assisted Simulation Planning for Co-Simulation of Cyber-Physical Energy Systems",
+      "summary": "Increasing complexity in the power system and the transformation towards a smart grid lead to the necessity of new tools and methods for the development and testing of new technologies. One testing method is co-simulation, which allows coupling simulation components from different domains to test their interaction. Because the manual configuration of complex large-scale co-simulation scenarios can be error-prone, we propose an approach for assisting the user in the development of co-simulation scenarios. Our approach uses an information model, a component catalog implemented in a Semantic Media Wiki, and Semantic Web technologies to assist the high-level modeling of co-simulation scenarios, recommend suitable simulation components, and validate co-simulation scenarios. This assistance aims to improve the usability of co-simulation in the development of interdisciplinary, large-scale scenarios.",
+      "authors": [
+        "Jan Sören Schwarz",
+        "Cornelius Steinbrink",
+        "Sebastian Lehnhoff"
+      ],
+      "published": "2024-10-22T12:36:39Z",
+      "updated": "2024-10-22T12:36:39Z",
+      "abstract_url": "http://arxiv.org/abs/2410.16956v1",
+      "pdf_url": "https://arxiv.org/pdf/2410.16956v1",
+      "primary_category": "cs.CE",
+      "categories": [
+        "cs.CE"
+      ]
+    },
+    {
+      "arxiv_id": "2308.00600v1",
+      "title": "Simulating the social influence in transport mode choices",
+      "summary": "Agent-based simulations have been used in modeling transportation systems for traffic management and passenger flows. In this work, we hope to shed light on the complex factors that influence transportation mode decisions within developing countries, using Colombia as a case study. We model an ecosystem of human agents that decide at each time step on the mode of transportation they would take to work. Their decision is based on a combination of their personal satisfaction with the journey they had just taken, which is evaluated across a personal vector of needs, the information they crowdsource from their prevailing social network, and their personal uncertainty about the experience of trying a new transport solution. We simulate different network structures to analyze the social influence for different decision-makers. We find that in low/medium connected groups inquisitive people actively change modes cyclically over the years while imitators cluster rapidly and change less frequently.",
+      "authors": [
+        "Kathleen Salazar-Serna",
+        "Lynnette Hui Xian Ng",
+        "Lorena Cadavid",
+        "Carlos J. Franco",
+        "Kathleen Carley"
+      ],
+      "published": "2023-08-01T15:28:18Z",
+      "updated": "2023-08-01T15:28:18Z",
+      "abstract_url": "http://arxiv.org/abs/2308.00600v1",
+      "pdf_url": "https://arxiv.org/pdf/2308.00600v1",
+      "primary_category": "physics.soc-ph",
+      "categories": [
+        "physics.soc-ph",
+        "cs.MA",
+        "cs.SI"
+      ]
+    }
+  ]
 }

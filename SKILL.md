@@ -76,7 +76,7 @@ python3 scripts/configure_provider.py
 python3 scripts/search_arxiv.py "<query>" --max-results 6 --output ./runs/demo/results.json
 python3 scripts/download_pdfs.py ./runs/demo/results.json --output-dir ./runs/demo/pdfs
 python3 scripts/extract_pdf_text.py ./runs/demo/pdfs --output-dir ./runs/demo/text
-python3 scripts/generate_summary.py ./runs/demo/results.json --text-dir ./runs/demo/text --output ./runs/demo/report.md
+python3 scripts/generate_summary.py ./runs/demo/results.json --text-dir ./runs/demo/text --output ./runs/demo/report.md --batch-size 2
 python3 scripts/export_html.py ./runs/demo/results.json --report ./runs/demo/report.md --output ./runs/demo/index.html
 ```
 
@@ -96,7 +96,7 @@ python3 scripts/export_html.py ./runs/demo/results.json --report ./runs/demo/rep
 - arXiv 返回 0 篇时停止后续下载、解析和摘要生成。
 - PDF 下载或正文提取失败时保留 manifest 中的错误状态，继续处理其他论文。
 - 缺少 API key 时，`run_pipeline.py` 会交互询问；用户不提供则跳过摘要生成。
-- `generate_summary.py` 会校验报告完整性；如果模型输出被截断或缺少必需小节，应失败而不是写入不完整报告。
+- `generate_summary.py` 默认每批总结 2 篇论文，直到覆盖全部文献；随后基于全部单篇摘要生成统一整体摘要。任一批次被截断或缺少必需小节时，应失败而不是写入不完整报告。
 - 如果 arXiv 网络持续失败，说明当前实现只有 arXiv 官方 API；备用搜索源需另行实现。
 
 ## 参考文件

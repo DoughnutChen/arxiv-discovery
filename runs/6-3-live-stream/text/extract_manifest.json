@@ -1,0 +1,56 @@
+[
+  {
+    "pdf_path": "runs/6-3-live-stream/pdfs/2305.10731v2.pdf",
+    "text_path": "runs/6-3-live-stream/text/2305.10731v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 17,
+    "characters": 64643,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-live-stream/pdfs/2310.03256v2.pdf",
+    "text_path": "runs/6-3-live-stream/text/2310.03256v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 40,
+    "characters": 229316,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-live-stream/pdfs/2402.13992v1.pdf",
+    "text_path": "runs/6-3-live-stream/text/2402.13992v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 33,
+    "characters": 136964,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-live-stream/pdfs/2410.04232v2.pdf",
+    "text_path": "runs/6-3-live-stream/text/2410.04232v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 4,
+    "characters": 26590,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-live-stream/pdfs/2410.16284v2.pdf",
+    "text_path": "runs/6-3-live-stream/text/2410.16284v2.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 6,
+    "characters": 32422,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-live-stream/pdfs/2504.05217v1.pdf",
+    "text_path": "runs/6-3-live-stream/text/2504.05217v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 9,
+    "characters": 47301,
+    "error": ""
+  }
+]

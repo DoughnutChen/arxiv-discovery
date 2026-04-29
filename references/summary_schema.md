@@ -1,6 +1,6 @@
 # 摘要输出结构
 
-最终结果由 `scripts/generate_summary.py` 写入 Markdown 文件，默认路径为完整流程输出目录下的 `report.md`。语言使用中文，论文题目保留英文原文。
+最终结果由 `scripts/generate_summary.py` 写入 Markdown 文件，默认路径为完整流程输出目录下的 `report.md`。摘要生成默认每批处理 2 篇论文，直到覆盖全部文献；随后基于全部单篇摘要生成统一整体摘要，再合并为一个最终报告。语言使用中文，论文题目保留英文原文。
 
 自动摘要生成支持 OpenAI Responses API 和 OpenAI-compatible chat completions 接口。provider、模型、base URL 和 API key 环境变量名由命令行参数、`.env` / 环境变量、`.local/provider.json` 或内置默认值解析；`configure_provider.py` 可一次性生成本地配置。不能把真实 API key 写入代码、提示词、日志或可提交文件。
 
@@ -18,7 +18,7 @@
 
 ## 整体摘要
 
-输出一段 200-300 字的整体摘要。语言风格应与单篇摘要一致，概括这一批论文共同关注的问题、主要方法取向和对当前关键词的研究价值。
+输出一段 200-300 字的整体摘要。语言风格应与单篇摘要一致，概括全部论文共同关注的问题、主要方法取向、差异和对当前关键词的研究价值。
 
 ## 1. English Paper Title
 

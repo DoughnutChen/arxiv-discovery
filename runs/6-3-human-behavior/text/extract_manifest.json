@@ -1,0 +1,56 @@
+[
+  {
+    "pdf_path": "runs/6-3-human-behavior/pdfs/2401.05840v1.pdf",
+    "text_path": "runs/6-3-human-behavior/text/2401.05840v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 12,
+    "characters": 59730,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-human-behavior/pdfs/2404.14647v1.pdf",
+    "text_path": "runs/6-3-human-behavior/text/2404.14647v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 10,
+    "characters": 51320,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-human-behavior/pdfs/2411.10872v4.pdf",
+    "text_path": "runs/6-3-human-behavior/text/2411.10872v4.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 77,
+    "characters": 146262,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-human-behavior/pdfs/2412.07788v1.pdf",
+    "text_path": "runs/6-3-human-behavior/text/2412.07788v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 32,
+    "characters": 143285,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-human-behavior/pdfs/2504.09717v1.pdf",
+    "text_path": "runs/6-3-human-behavior/text/2504.09717v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 8,
+    "characters": 48830,
+    "error": ""
+  },
+  {
+    "pdf_path": "runs/6-3-human-behavior/pdfs/2507.19495v1.pdf",
+    "text_path": "runs/6-3-human-behavior/text/2507.19495v1.txt",
+    "status": "extracted",
+    "extractor": "pymupdf",
+    "pages": 23,
+    "characters": 85233,
+    "error": ""
+  }
+]

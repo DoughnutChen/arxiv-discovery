@@ -4,7 +4,7 @@
     "title": "Towards an Assisted Simulation Planning for Co-Simulation of Cyber-Physical Energy Systems",
     "pdf_url": "https://arxiv.org/pdf/2410.16956v1",
     "pdf_path": "runs/2-3-simulation/pdfs/2410.16956v1.pdf",
-    "status": "downloaded",
+    "status": "exists",
     "error": ""
   },
   {
@@ -12,7 +12,7 @@
     "title": "Simulating the social influence in transport mode choices",
     "pdf_url": "https://arxiv.org/pdf/2308.00600v1",
     "pdf_path": "runs/2-3-simulation/pdfs/2308.00600v1.pdf",
-    "status": "downloaded",
+    "status": "exists",
     "error": ""
   }
 ]

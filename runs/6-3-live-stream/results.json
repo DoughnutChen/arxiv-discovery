@@ -1,0 +1,144 @@
+{
+  "query": "live-stream",
+  "category": null,
+  "sort_by": "relevance",
+  "sort_order": "descending",
+  "requested_results": 6,
+  "date_from": "2023-05-01",
+  "date_to": "2026-04-30",
+  "keywords": [
+    "live-stream"
+  ],
+  "returned_results": 6,
+  "papers": [
+    {
+      "arxiv_id": "2410.16284v2",
+      "title": "A 3D Framework for Improving Low-Latency Multi-Channel Live Streaming",
+      "summary": "The advent of 5G has driven the demand for high-quality, low-latency live streaming. However, challenges such as managing the increased data volume, ensuring synchronization across multiple streams, and maintaining consistent quality under varying network conditions persist, particularly in real-time video streaming. To address these issues, we propose a novel framework that leverages 3D virtual environments within game engines (e.g., Unity 3D) to optimize multi-channel live streaming. Our approach consolidates multi-camera video data into a single stream using multiple virtual 3D canvases, significantly increasing channel amounts while reducing latency and enhancing user flexibility. For demonstration of our approach, we utilize the Unity 3D engine to integrate multiple video inputs into a single-channel stream, supporting one-to-many broadcasting, one-to-one video calling, and real-time control of video channels. By mapping video data onto a world-space canvas and capturing it via an in-world camera, we minimize redundant data transmission, achieving efficient, low-latency streaming. Our results demonstrate that this method outperforms some existing multi-channel live streaming solutions in both latency reduction and user interaction responsiveness improvement. Our live video streaming system affiliated with this paper is also open-source at https://github.com/Aizierjiang/LiveStreaming.",
+      "authors": [
+        "Aizierjiang Aiersilan",
+        "Zhiqiang Wang"
+      ],
+      "published": "2024-10-05T02:21:57Z",
+      "updated": "2025-04-30T13:49:35Z",
+      "abstract_url": "http://arxiv.org/abs/2410.16284v2",
+      "pdf_url": "https://arxiv.org/pdf/2410.16284v2",
+      "primary_category": "cs.MM",
+      "categories": [
+        "cs.MM"
+      ]
+    },
+    {
+      "arxiv_id": "2305.10731v2",
+      "title": "Analyzing Norm Violations in Live-Stream Chat",
+      "summary": "Toxic language, such as hate speech, can deter users from participating in online communities and enjoying popular platforms. Previous approaches to detecting toxic language and norm violations have been primarily concerned with conversations from online forums and social media, such as Reddit and Twitter. These approaches are less effective when applied to conversations on live-streaming platforms, such as Twitch and YouTube Live, as each comment is only visible for a limited time and lacks a thread structure that establishes its relationship with other comments. In this work, we share the first NLP study dedicated to detecting norm violations in conversations on live-streaming platforms. We define norm violation categories in live-stream chats and annotate 4,583 moderated comments from Twitch. We articulate several facets of live-stream data that differ from other forums, and demonstrate that existing models perform poorly in this setting. By conducting a user study, we identify the informational context humans use in live-stream moderation, and train models leveraging context to identify norm violations. Our results show that appropriate contextual information can boost moderation performance by 35\\%.",
+      "authors": [
+        "Jihyung Moon",
+        "Dong-Ho Lee",
+        "Hyundong Cho",
+        "Woojeong Jin",
+        "Chan Young Park",
+        "Minwoo Kim",
+        "Jonathan May",
+        "Jay Pujara",
+        "Sungjoon Park"
+      ],
+      "published": "2023-05-18T05:58:27Z",
+      "updated": "2023-10-08T03:57:31Z",
+      "abstract_url": "http://arxiv.org/abs/2305.10731v2",
+      "pdf_url": "https://arxiv.org/pdf/2305.10731v2",
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ]
+    },
+    {
+      "arxiv_id": "2402.13992v1",
+      "title": "Meditating in Live Stream: An Autoethnographic and Interview Study to Investigate Motivations, Interactions and Challenges",
+      "summary": "Mindfulness practice has many mental and physical well-being benefits. With the increased popularity of live stream technologies and the impact of COVID-19, many people have turned to live stream tools to participate in online meditation sessions. To better understand the practices, challenges, and opportunities in live-stream meditation, we conducted a three-month autoethnographic study, during which two researchers participated in live-stream meditation sessions as the audience. Then we conducted a follow-up semi-structured interview study with 10 experienced live meditation teachers who use different live-stream tools. We found that live meditation, although having a weaker social presence than in-person meditation, facilitates attendees in establishing a practice routine and connecting with other meditators. Teachers use live streams to deliver the meditation practice to the world which also enhances their practice and brand building. We identified the challenges of using live-stream tools for meditation from the perspectives of both audiences and teachers, and provided design recommendations to better utilize live meditation as a resource for mental wellbeing.",
+      "authors": [
+        "Jingjin Li",
+        "Jiajing Guo",
+        "Gilly Leshed"
+      ],
+      "published": "2024-02-21T18:24:07Z",
+      "updated": "2024-02-21T18:24:07Z",
+      "abstract_url": "http://arxiv.org/abs/2402.13992v1",
+      "pdf_url": "https://arxiv.org/pdf/2402.13992v1",
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ]
+    },
+    {
+      "arxiv_id": "2504.05217v1",
+      "title": "LLM-Alignment Live-Streaming Recommendation",
+      "summary": "In recent years, integrated short-video and live-streaming platforms have gained massive global adoption, offering dynamic content creation and consumption. Unlike pre-recorded short videos, live-streaming enables real-time interaction between authors and users, fostering deeper engagement. However, this dynamic nature introduces a critical challenge for recommendation systems (RecSys): the same live-streaming vastly different experiences depending on when a user watching. To optimize recommendations, a RecSys must accurately interpret the real-time semantics of live content and align them with user preferences.",
+      "authors": [
+        "Yueyang Liu",
+        "Jiangxia Cao",
+        "Shen Wang",
+        "Shuang Wen",
+        "Xiang Chen",
+        "Xiangyu Wu",
+        "Shuang Yang",
+        "Zhaojie Liu",
+        "Kun Gai",
+        "Guorui Zhou"
+      ],
+      "published": "2025-04-07T16:04:00Z",
+      "updated": "2025-04-07T16:04:00Z",
+      "abstract_url": "http://arxiv.org/abs/2504.05217v1",
+      "pdf_url": "https://arxiv.org/pdf/2504.05217v1",
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR"
+      ]
+    },
+    {
+      "arxiv_id": "2410.04232v2",
+      "title": "Be There, Be Together, Be Streamed! AR Scenic Live-Streaming for an Interactive and Collective Experience",
+      "summary": "Scenic Live-Streaming (SLS), capturing real-world scenic sites from fixed cameras without streamers, combines scene immersion and the social and real-time characteristics of live-streaming into a unique experience. However, existing SLS affords limited audience interactions to engage them in a collective experience compared to many other live-streaming genres. It is also difficult for SLS to recreate important but intangible constituents of in-person trip experiences, such as cultural activities. To offer a more interactive, engaging, and meaningful experience, we propose ARSLS (Augmented Reality Scenic Live-Streaming). Culturally grounded AR objects with awareness of the live-streamed environment can be overlaid over camera views to provide additional interactive features while maintaining consistency with the live-streamed scene. To explore the design space of this new medium, we developed an ARSLS prototype for a famous landscape in China. A preliminary study (N=15) provided initial insights for ARSLS design.",
+      "authors": [
+        "Zeyu Huang",
+        "Zuyu Xu",
+        "Yuanhao Zhang",
+        "Chengzhong Liu",
+        "Yanwei Zhao",
+        "Chuhan Shi",
+        "Jason Chen Zhao",
+        "Xiaojuan Ma"
+      ],
+      "published": "2024-10-05T17:12:19Z",
+      "updated": "2024-12-07T06:08:06Z",
+      "abstract_url": "http://arxiv.org/abs/2410.04232v2",
+      "pdf_url": "https://arxiv.org/pdf/2410.04232v2",
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ]
+    },
+    {
+      "arxiv_id": "2310.03256v2",
+      "title": "Toward One-Second Latency: Evolution of Live Media Streaming",
+      "summary": "This survey presents the evolution of live media streaming and the technological developments behind today's IP-based low-latency live streaming systems. Live streaming primarily involves capturing, encoding, packaging and delivering real-time events such as live sports, live news, personal broadcasts and surveillance videos. Live streaming also involves concurrent streaming of linear TV programming off the satellite, cable, over-the-air or IPTV broadcast, where the programming is not necessarily a real-time event. The survey starts with a discussion on the latency and latency continuum in streaming applications. Then, it lays out the existing live streaming workflows and protocols, followed by an in-depth analysis of the latency sources in these workflows and protocols. The survey continues with the technology enablers, low-latency extensions for the popular HTTP adaptive streaming methods and enhancements for robust low-latency playback. An entire section is dedicated to the detailed summary and findings of Twitch's grand challenge on low-latency live streaming. The survey concludes with a discussion of ongoing research problems in this space. We expect this survey to be the one-stop reference for those who would like to learn how low-latency live streaming has evolved and works today, and what further developments could happen in the future.",
+      "authors": [
+        "Abdelhak Bentaleb",
+        "May Lim",
+        "Mehmet N. Akcay",
+        "Ali C. Begen",
+        "Sarra Hammoudi",
+        "Roger Zimmermann"
+      ],
+      "published": "2023-10-05T02:18:55Z",
+      "updated": "2025-03-28T21:00:19Z",
+      "abstract_url": "http://arxiv.org/abs/2310.03256v2",
+      "pdf_url": "https://arxiv.org/pdf/2310.03256v2",
+      "primary_category": "cs.NI",
+      "categories": [
+        "cs.NI",
+        "cs.MM"
+      ]
+    }
+  ]
+}
