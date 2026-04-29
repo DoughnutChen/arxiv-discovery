@@ -13,11 +13,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from provider_config import provider_names, resolve_provider_config
 
-OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses"
-KIMI_BASE_URL = "https://api.moonshot.cn/v1"
-DEFAULT_OPENAI_MODEL = "gpt-4.1-mini"
-DEFAULT_KIMI_MODEL = "moonshot-v1-32k"
 MAX_TEXT_CHARS_PER_PAPER = 12000
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_STYLE_REFERENCE = SCRIPT_DIR.parent / "references" / "summary_schema.md"
@@ -96,7 +93,7 @@ def build_prompt(payload: dict[str, Any], text_dir: Path | None, style_reference
 """.strip()
 
 
-def call_openai(prompt: str, model: str, api_key: str) -> str:
+def call_openai(prompt: str, model: str, api_key: str, base_url: str) -> str:
     body = {
         "model": model,
         "input": [
@@ -111,8 +108,9 @@ def call_openai(prompt: str, model: str, api_key: str) -> str:
             }
         ],
     }
+    url = base_url.rstrip("/") + "/responses"
     request = urllib.request.Request(
-        OPENAI_RESPONSES_URL,
+        url,
         data=json.dumps(body).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {api_key}",
@@ -138,7 +136,7 @@ def call_openai(prompt: str, model: str, api_key: str) -> str:
     return output_text
 
 
-def call_kimi(prompt: str, model: str, api_key: str, base_url: str) -> str:
+def call_openai_compatible(prompt: str, model: str, api_key: str, base_url: str) -> str:
     url = base_url.rstrip("/") + "/chat/completions"
     body = {
         "model": model,
@@ -164,21 +162,15 @@ def call_kimi(prompt: str, model: str, api_key: str, base_url: str) -> str:
             result = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="ignore")
-        raise RuntimeError(f"Kimi API 请求失败：HTTP {exc.code} {detail}") from exc
+        raise RuntimeError(f"OpenAI-compatible API 请求失败：HTTP {exc.code} {detail}") from exc
 
     choices = result.get("choices", [])
     if not choices:
-        raise RuntimeError("Kimi API 未返回可用 choices。")
+        raise RuntimeError("OpenAI-compatible API 未返回可用 choices。")
     output_text = str(choices[0].get("message", {}).get("content", "")).strip()
     if not output_text:
-        raise RuntimeError("Kimi API 未返回可用文本。")
+        raise RuntimeError("OpenAI-compatible API 未返回可用文本。")
     return output_text
-
-
-def default_model(provider: str) -> str:
-    if provider == "kimi":
-        return DEFAULT_KIMI_MODEL
-    return DEFAULT_OPENAI_MODEL
 
 
 def validate_report_complete(report: str, payload: dict[str, Any]) -> None:
@@ -203,18 +195,19 @@ def main() -> int:
     parser.add_argument("results_json", type=Path, help="search_arxiv.py 生成的 results.json。")
     parser.add_argument("--text-dir", type=Path, help="extract_pdf_text.py 生成的正文目录。")
     parser.add_argument("--output", type=Path, default=Path("report.md"), help="输出 Markdown 报告路径。")
-    parser.add_argument("--provider", choices=("openai", "kimi"), default="kimi", help="摘要生成服务，默认 kimi。")
-    parser.add_argument("--model", help="生成摘要使用的模型；未指定时按 provider 使用默认模型。")
-    parser.add_argument("--base-url", help=f"Kimi API base URL，默认 {KIMI_BASE_URL}。")
+    parser.add_argument("--provider", choices=provider_names(), help="摘要生成服务；未指定时读取本地配置，默认 kimi。")
+    parser.add_argument("--model", help="生成摘要使用的模型；优先级高于本地配置。")
+    parser.add_argument("--base-url", help="API base URL；优先级高于本地配置。")
+    parser.add_argument("--api-key-env", help="API key 环境变量名；优先级高于本地配置。")
     parser.add_argument("--prompt-output", type=Path, help="可选：保存发送给模型的提示词，便于开发调试。")
     parser.add_argument("--style-reference", type=Path, default=DEFAULT_STYLE_REFERENCE, help="摘要格式和风格要求 Markdown 文件。")
     args = parser.parse_args()
 
-    model = args.model or default_model(args.provider)
-    key_name = "KIMI_API_KEY" if args.provider == "kimi" else "OPENAI_API_KEY"
+    provider_config = resolve_provider_config(args.provider, args.model, args.base_url, args.api_key_env)
+    key_name = provider_config["api_key_env"]
     api_key = os.environ.get(key_name)
     if not api_key:
-        print(f"未检测到 {key_name}，无法自动生成摘要。请通过环境变量提供 API key，或使用 run_pipeline.py 交互输入。", file=sys.stderr)
+        print(f"未检测到 {key_name}，无法自动生成摘要。请通过环境变量、.env 或 run_pipeline.py 交互输入提供 API key。", file=sys.stderr)
         return 2
 
     payload = read_json(args.results_json)
@@ -224,10 +217,10 @@ def main() -> int:
         args.prompt_output.parent.mkdir(parents=True, exist_ok=True)
         args.prompt_output.write_text(prompt, encoding="utf-8")
 
-    if args.provider == "kimi":
-        report = call_kimi(prompt, model, api_key, args.base_url or KIMI_BASE_URL)
+    if provider_config["type"] == "openai-compatible":
+        report = call_openai_compatible(prompt, provider_config["model"], api_key, provider_config["base_url"])
     else:
-        report = call_openai(prompt, model, api_key)
+        report = call_openai(prompt, provider_config["model"], api_key, provider_config["base_url"])
     validate_report_complete(report, payload)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")

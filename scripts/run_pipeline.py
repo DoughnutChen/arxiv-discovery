@@ -12,6 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from provider_config import provider_names, resolve_provider_config
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
@@ -35,7 +36,7 @@ def ask_query() -> str:
 
 
 def ask_api_key(provider: str, key_name: str) -> str:
-    label = "Kimi" if provider == "kimi" else "OpenAI"
+    label = provider
     api_key = getpass.getpass(f"请输入 {label} API key（输入不会显示）：").strip()
     if not api_key:
         raise ValueError(f"{key_name} 不能为空。")
@@ -68,9 +69,10 @@ def main() -> int:
         help="排序方向，默认 descending。",
     )
     parser.add_argument("--output-dir", type=Path, help="输出目录，默认 runs/<query-slug>。")
-    parser.add_argument("--provider", choices=("openai", "kimi"), default="kimi", help="摘要生成服务，默认 kimi。")
-    parser.add_argument("--model", help="生成摘要使用的模型；未指定时按 provider 使用默认模型。")
-    parser.add_argument("--base-url", help="Kimi API base URL；通常不需要修改。")
+    parser.add_argument("--provider", choices=provider_names(), help="摘要生成服务；未指定时读取本地配置，默认 kimi。")
+    parser.add_argument("--model", help="生成摘要使用的模型；优先级高于本地配置。")
+    parser.add_argument("--base-url", help="API base URL；优先级高于本地配置。")
+    parser.add_argument("--api-key-env", help="API key 环境变量名；优先级高于本地配置。")
     parser.add_argument("--skip-download", action="store_true", help="只搜索 arXiv，不下载 PDF。")
     parser.add_argument("--skip-extract", action="store_true", help="搜索和下载 PDF，但不提取正文。")
     parser.add_argument("--skip-summary", action="store_true", help="不生成中文摘要报告。")
@@ -155,11 +157,12 @@ def main() -> int:
     if args.skip_summary:
         print("已按参数跳过自动摘要生成。")
     else:
-        key_name = "KIMI_API_KEY" if args.provider == "kimi" else "OPENAI_API_KEY"
+        provider_config = resolve_provider_config(args.provider, args.model, args.base_url, args.api_key_env)
+        key_name = provider_config["api_key_env"]
         api_key = os.environ.get(key_name)
         if not api_key:
             try:
-                api_key = ask_api_key(args.provider, key_name)
+                api_key = ask_api_key(provider_config["provider"], key_name)
             except ValueError as exc:
                 print(f"{exc} 已跳过自动摘要生成。")
                 api_key = ""
@@ -171,12 +174,14 @@ def main() -> int:
                 "--output",
                 str(report_md),
                 "--provider",
-                args.provider,
+                provider_config["provider"],
+                "--model",
+                provider_config["model"],
+                "--base-url",
+                provider_config["base_url"],
+                "--api-key-env",
+                provider_config["api_key_env"],
             ]
-            if args.model:
-                summary_command.extend(["--model", args.model])
-            if args.base_url:
-                summary_command.extend(["--base-url", args.base_url])
             if text_available:
                 summary_command.extend(["--text-dir", str(text_dir)])
             if args.save_prompt:
