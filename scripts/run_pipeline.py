@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""运行 arXiv 搜索、PDF 下载、正文提取和中文摘要生成流水线。"""
+"""运行 arXiv 搜索、PDF 下载、正文提取和中文摘要生成完整流程。"""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from provider_config import provider_names, resolve_provider_config
+from provider_settings import provider_names, resolve_provider_config
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
@@ -157,12 +157,12 @@ def main() -> int:
     if args.skip_summary:
         print("已按参数跳过自动摘要生成。")
     else:
-        provider_config = resolve_provider_config(args.provider, args.model, args.base_url, args.api_key_env)
-        key_name = provider_config["api_key_env"]
+        provider_settings = resolve_provider_config(args.provider, args.model, args.base_url, args.api_key_env)
+        key_name = provider_settings["api_key_env"]
         api_key = os.environ.get(key_name)
         if not api_key:
             try:
-                api_key = ask_api_key(provider_config["provider"], key_name)
+                api_key = ask_api_key(provider_settings["provider"], key_name)
             except ValueError as exc:
                 print(f"{exc} 已跳过自动摘要生成。")
                 api_key = ""
@@ -174,13 +174,13 @@ def main() -> int:
                 "--output",
                 str(report_md),
                 "--provider",
-                provider_config["provider"],
+                provider_settings["provider"],
                 "--model",
-                provider_config["model"],
+                provider_settings["model"],
                 "--base-url",
-                provider_config["base_url"],
+                provider_settings["base_url"],
                 "--api-key-env",
-                provider_config["api_key_env"],
+                provider_settings["api_key_env"],
             ]
             if text_available:
                 summary_command.extend(["--text-dir", str(text_dir)])
@@ -208,7 +208,7 @@ def main() -> int:
     else:
         print("已按参数跳过 HTML 页面导出。")
 
-    print("流水线完成。")
+    print("完整流程完成。")
     print(f"搜索结果：{results_json}")
     print(f"PDF 目录：{pdf_dir}")
     print(f"正文目录：{text_dir}")

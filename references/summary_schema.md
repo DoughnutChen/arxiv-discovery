@@ -1,8 +1,8 @@
 # 摘要输出结构
 
-最终结果由 `scripts/generate_summary.py` 写入 Markdown 文件，默认路径为流水线输出目录下的 `report.md`。语言使用中文，论文题目保留英文原文。
+最终结果由 `scripts/generate_summary.py` 写入 Markdown 文件，默认路径为完整流程输出目录下的 `report.md`。语言使用中文，论文题目保留英文原文。
 
-自动摘要生成支持 OpenAI Responses API 和 Kimi chat completions 兼容接口。`generate_summary.py` 从环境变量读取 API key：OpenAI 使用 `OPENAI_API_KEY`，Kimi 使用 `KIMI_API_KEY`；`run_pipeline.py` 在环境变量缺失时会交互询问并临时传给子进程。不能把密钥写入代码、提示词、日志或输出文件。
+自动摘要生成支持 OpenAI Responses API 和 OpenAI-compatible chat completions 接口。provider、模型、base URL 和 API key 环境变量名由命令行参数、`.env` / 环境变量、`.local/provider.json` 或内置默认值解析；`configure_provider.py` 可一次性生成本地配置。不能把真实 API key 写入代码、提示词、日志或可提交文件。
 
 ## 报告头部
 
@@ -46,8 +46,8 @@
 ③ 保持信息密度高、表达直接  
 
 ### 具体领域
-用 1–2 个短语标注论文所属数字经济细分方向，例如：
-- 平台经济 / 数字金融 / Web3 / 数据治理 / AI经济 / 行为金融 等
+用 1–2 个短语标注论文所属细分方向，例如：
+- 自然语言处理 / 机器学习 / AI 安全 / 医疗 AI / 数据治理 / 行为金融 等
 
 ### 推荐原因
 用 1–2 句说明论文的学术或应用价值，重点强调：
@@ -79,7 +79,7 @@
 
 ### 具体领域
 
-数字金融 / 平台经济 / 数字治理
+自然语言处理 / 检索增强生成 / AI 系统
 
 ### 推荐原因
 

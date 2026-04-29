@@ -39,8 +39,8 @@ def build_html(results_json: Path, report_md: Path | None) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="导出 arXiv Discovery 单文件 HTML 报告。")
-    parser.add_argument("results_json", type=Path, help="流水线生成的 results.json。")
-    parser.add_argument("--report", type=Path, help="流水线生成的 report.md。")
+    parser.add_argument("results_json", type=Path, help="完整流程生成的 results.json。")
+    parser.add_argument("--report", type=Path, help="完整流程生成的 report.md。")
     parser.add_argument("--output", type=Path, default=Path("index.html"), help="输出 HTML 路径。")
     args = parser.parse_args()
 

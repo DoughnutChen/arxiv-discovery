@@ -13,7 +13,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from provider_config import provider_names, resolve_provider_config
+from provider_settings import provider_names, resolve_provider_config
 
 MAX_TEXT_CHARS_PER_PAPER = 12000
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -203,8 +203,8 @@ def main() -> int:
     parser.add_argument("--style-reference", type=Path, default=DEFAULT_STYLE_REFERENCE, help="摘要格式和风格要求 Markdown 文件。")
     args = parser.parse_args()
 
-    provider_config = resolve_provider_config(args.provider, args.model, args.base_url, args.api_key_env)
-    key_name = provider_config["api_key_env"]
+    provider_settings = resolve_provider_config(args.provider, args.model, args.base_url, args.api_key_env)
+    key_name = provider_settings["api_key_env"]
     api_key = os.environ.get(key_name)
     if not api_key:
         print(f"未检测到 {key_name}，无法自动生成摘要。请通过环境变量、.env 或 run_pipeline.py 交互输入提供 API key。", file=sys.stderr)
@@ -217,10 +217,10 @@ def main() -> int:
         args.prompt_output.parent.mkdir(parents=True, exist_ok=True)
         args.prompt_output.write_text(prompt, encoding="utf-8")
 
-    if provider_config["type"] == "openai-compatible":
-        report = call_openai_compatible(prompt, provider_config["model"], api_key, provider_config["base_url"])
+    if provider_settings["type"] == "openai-compatible":
+        report = call_openai_compatible(prompt, provider_settings["model"], api_key, provider_settings["base_url"])
     else:
-        report = call_openai(prompt, provider_config["model"], api_key, provider_config["base_url"])
+        report = call_openai(prompt, provider_settings["model"], api_key, provider_settings["base_url"])
     validate_report_complete(report, payload)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")

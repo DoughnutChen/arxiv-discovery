@@ -112,7 +112,7 @@ function render() {
   nodes.queryValue.textContent = results.query || "等待导入";
   nodes.overallSummary.textContent =
     state.parsedReport.overall ||
-    (metadataPapers.length ? "已导入 arXiv 元数据。继续导入 report.md 后，将显示整体摘要和单篇推荐原因。" : "请先导入流水线生成的 results.json 和 report.md。");
+    (metadataPapers.length ? "已导入 arXiv 元数据。继续导入 report.md 后，将显示整体摘要和单篇推荐原因。" : "请先导入完整流程生成的 results.json 和 report.md。");
 
   renderPapers(state.mergedPapers.length ? state.mergedPapers : state.parsedReport.papers);
   renderArchive(state.mergedPapers);

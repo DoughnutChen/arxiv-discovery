@@ -7,7 +7,7 @@ import argparse
 import getpass
 from pathlib import Path
 
-from provider_config import DOTENV_PATH, LOCAL_CONFIG_PATH, default_for, provider_names, write_local_config
+from provider_settings import DOTENV_PATH, LOCAL_CONFIG_PATH, default_for, provider_names, write_local_config
 
 
 def ask(prompt: str, default: str = "") -> str:
