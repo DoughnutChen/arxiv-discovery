@@ -71,23 +71,6 @@ python3 scripts/run_pipeline.py "帮我找近三年 4 篇 Agent 相关论文"
 python3 scripts/run_pipeline.py "large language model inference" --max-results 6
 ```
 
-指定摘要分批大小：
-
-```bash
-python3 scripts/run_pipeline.py "large language model inference" --max-results 6 --summary-batch-size 2
-```
-
-只搜索、下载和导出页面，不调用摘要模型：
-
-```bash
-python3 scripts/run_pipeline.py "diffusion models" --max-results 3 --skip-summary
-```
-
-显式切换 provider：
-
-```bash
-python3 scripts/run_pipeline.py "retrieval augmented generation" --provider openai --model gpt-4.1-mini
-```
 
 分步骤运行：
 
