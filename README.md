@@ -1,6 +1,7 @@
 # ArXiv Discovery Skill
 
 `arxiv-discovery` 是一个 Codex skill，用于按关键词搜索 arXiv、下载论文 PDF、提取正文，并生成中文论文速读报告和可直接打开的 HTML 页面。
+飞书说明文档：https://jcn7zice1pwy.feishu.cn/wiki/DtPOweLgSiChQ3kp6iVcnpUKnYd
 
 ## 安装
 
